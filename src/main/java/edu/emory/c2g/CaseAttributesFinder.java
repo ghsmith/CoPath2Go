@@ -113,7 +113,7 @@ public class CaseAttributesFinder {
         + "   and dbo.r_medrec.client_id = dbo.c_specimen.client_id "
         + "   and dbo.r_medrec.patdemog_id = dbo.r_pat_demograph.patdemog_id "
         + "   and dbo.c_d_client.id = dbo.c_specimen.client_id "
-        + "   and dbo.c_specimen.specnum_id = ? ";
+        + "   and dbo.c_specimen.specimen_id = ? ";
 
         PreparedStatement pstmt = conn.prepareStatement(SQL);
         pstmt.setString(1, specimenId);
