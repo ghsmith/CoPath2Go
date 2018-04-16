@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class AddDemographicsToCmp26GoManifest {  
+public class UpdateDemographicsInCmp26GoManifest {  
 
     public static void main(String[] args) throws ParseException, IOException, ClassNotFoundException, SQLException {  
 
@@ -31,7 +31,7 @@ public class AddDemographicsToCmp26GoManifest {
         tsvLine = stdIn.readLine();
         System.out.println(tsvLine); // this line is the column headings
         List<String> columnNames = Arrays.asList(tsvLine.split("\t"));
-        while (((tsvLine = stdIn.readLine()) != null && tsvLine.length() != 0) & !"samples".equals(tsvLine)) {
+        while (((tsvLine = stdIn.readLine()) != null && tsvLine.length() != 0)) {
             List<String> columnValues = Arrays.asList(tsvLine.split("\t"));
             String sampleId = columnValues.get(columnNames.indexOf("sample_id"));
             Pattern patternSampleId = Pattern.compile("^([^-]+)-([0-9]+)-.*$");
@@ -51,6 +51,7 @@ public class AddDemographicsToCmp26GoManifest {
                     case "gender": System.out.print(caseAttributes.gender != null && caseAttributes.gender.length() > 0 ? caseAttributes.gender : ""); break;
                     case "dob": System.out.print(sdf.format(caseAttributes.dob)); break;
                     case "ordering_physician": System.out.print(caseAttributes.orderingProviderLastName + ", " + caseAttributes.orderingProviderFirstName); break;
+                    case "ordering_physician_institute": System.out.print(caseAttributes.client); break;
                     case "specimen_collected": System.out.print(sdf.format(caseAttributes.dateCollected)); break;
                     case "specimen_received": System.out.print(sdf.format(caseAttributes.dateAccessioned)); break;
                     default: System.out.print(columnValues.get(columnNumber)); break;

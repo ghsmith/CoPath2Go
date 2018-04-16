@@ -4,6 +4,7 @@ import java.sql.*;
 
 public class CaseAttributes {
 
+    public String accessionNumber;
     public String mrn;
     public Date dob;
     public String gender;
@@ -17,6 +18,7 @@ public class CaseAttributes {
     public String client;
 
     public CaseAttributes(ResultSet rs) throws SQLException {
+       this.accessionNumber = rs.getString("specnum_formatted");
        this.mrn = rs.getString("medrec_num");
        this.dob = rs.getDate("date_of_birth");
        this.gender = rs.getString("gender");
@@ -29,10 +31,10 @@ public class CaseAttributes {
        this.orderingProviderFirstName = rs.getString("ordering_provider_firstname");
        this.client = rs.getString("client");
     }
-    
+
     @Override
     public String toString() {
-        return "CaseAttributes{" + "mrn=" + mrn + ", lastName=" + lastName + ", firstName=" + firstName + ", dob=" + dob + ", gender=" + gender + ", client=" + client + ", dateCollected=" + dateCollected + ", dateAccessioned=" + dateAccessioned + ", orderingProviderLastName=" + orderingProviderLastName + ", orderingProviderFirstName=" + orderingProviderFirstName + '}';
+        return "CaseAttributes{" + "accessionNumber=" + accessionNumber + ", mrn=" + mrn + ", dob=" + dob + ", gender=" + gender + ", lastName=" + lastName + ", firstName=" + firstName + ", middleName=" + middleName + ", dateCollected=" + dateCollected + ", dateAccessioned=" + dateAccessioned + ", orderingProviderLastName=" + orderingProviderLastName + ", orderingProviderFirstName=" + orderingProviderFirstName + ", client=" + client + '}';
     }
-    
+        
 }
