@@ -1,6 +1,6 @@
 #!/bin/bash
 # This script must be run in the Illumina run directory that contains the sample sheet.
-# example usage: ./sample_sheet_to_go_manifest.sh SampleSheet.csv > GoManifest.tsv
+# example usage: ./cmp26_sample_sheet_to_go_manifest.sh SampleSheet.csv > GoManifest.tsv
 # GHS 4/9/2018
 
 TS=`date +%Y%m%d%H%M`

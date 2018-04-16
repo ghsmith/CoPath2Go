@@ -45,6 +45,7 @@ public class AddPendingCasesToSNaPShotGoManifest {
                     case "order_date": System.out.print(sdf.format(sNaPShotProcedure.dateOrdered)); break;
                     case "test": System.out.print("SNaPshot Panel"); break;
                     case "disease_name": System.out.print("Tumor of Unknown Origin"); break;
+                    case "emory_order_id": System.out.print(caseAttributes.accessionNumber); break;
                     case "mrn": System.out.print(caseAttributes.mrn); break;
                     case "first_name": System.out.print(caseAttributes.firstName); break;
                     case "last_name": System.out.print(caseAttributes.lastName); break;
