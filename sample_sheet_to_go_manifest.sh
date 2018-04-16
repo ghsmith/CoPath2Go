@@ -42,4 +42,4 @@ in_data_block ~ /true/ {
 }
 _EOF_
 ) ${1} \
-| java -cp /u01/cp26/scripts/uber-DemographicsForGoManifest-1.0-SNAPSHOT.jar edu.emory.d4g.Process
+| java -cp /u01/cp26/scripts/uber-CoPath2Go-1.0-SNAPSHOT.jar edu.emory.c2g.UpdateDemographicsInCmp26GoManifest
