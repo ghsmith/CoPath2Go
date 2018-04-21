@@ -35,7 +35,9 @@ public class CreateSNaPShotGoManifest {
         ,"emory_run_id"
         ,"emory_order_id"            
     });
-    
+
+    // standard output = GO manifest
+    // arg[0] = JDBC URL for CoPath database
     public static void main(String[] args) throws ParseException, IOException, ClassNotFoundException, SQLException {  
 
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
