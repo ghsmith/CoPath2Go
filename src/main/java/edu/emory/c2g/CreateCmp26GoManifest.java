@@ -74,6 +74,7 @@ public class CreateCmp26GoManifest {
         Connection conn = DriverManager.getConnection(args[0]);
         
         CaseAttributesFinder caseAttributesFinder = new CaseAttributesFinder(conn);
+        CMP26ProcedureFinder cMP26ProcedureFinder = new CMP26ProcedureFinder(conn);
 
         System.out.println("runs");
         System.out.println(String.format("%s\t%s\t%s\t%s", "run_id", "platform", "run_type", "run_data_location"));
@@ -108,6 +109,7 @@ public class CreateCmp26GoManifest {
             }
             String accessionNumber = String.format("%s-%s", matcherSampleName.group(1).toUpperCase(), new Integer(matcherSampleName.group(2)));
             CaseAttributes caseAttributes = caseAttributesFinder.getByAccessionNumber(accessionNumber);
+            CMP26Procedure cMP26Procedure = cMP26ProcedureFinder.getBySpecimenId(caseAttributes.specimenId);
             for(int columnNumber = 0; columnNumber < columnNames.size(); columnNumber++) {
                 if(columnNumber > 0) { System.out.print("\t"); }
                 switch(columnNames.get(columnNumber)) {
@@ -130,6 +132,7 @@ public class CreateCmp26GoManifest {
                     case "ordering_physician_institute": System.out.print(caseAttributes.client); break;
                     case "specimen_collected": System.out.print(sdf.format(caseAttributes.dateCollected)); break;
                     case "specimen_received": System.out.print(sdf.format(caseAttributes.dateAccessioned)); break;
+                    case "order_date": System.out.print(cMP26Procedure != null && cMP26Procedure.dateOrdered != null ? sdf.format(cMP26Procedure.dateOrdered) : ""); break;
                     default: System.out.print(""); break;
                 }
             }
@@ -177,6 +180,9 @@ public class CreateCmp26GoManifest {
         }
             
         conn.close();
+        
+        System.err.println("CMP 26 GO Manifest creation complete");
+        System.exit(0);
 
     }  
 

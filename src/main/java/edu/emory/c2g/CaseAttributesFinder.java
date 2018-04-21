@@ -14,13 +14,14 @@ public class CaseAttributesFinder {
 
         CaseAttributes caseAttributes = null;
         
-        // @todo This is may return the wrong dates for a multipart specimen.
+        // @todo This may return the wrong dates for a multipart specimen.
         //       Note the "top 1" restriction. Since we don't have easy access
         //       to the part that is the subject of the molecular testing and
         //       the collection dates for the parts are generally the same,
         //       this doesn't seem like a big deal to me. -GHS 4/11/18
         String SQL =
           " select top 1 "
+        + "   dbo.c_specimen.specimen_id, "
         + "   dbo.c_specimen.specnum_formatted, "
         + "   dbo.r_medrec.medrec_num, "
         + "   dbo.r_pat_demograph.date_of_birth, "
@@ -73,13 +74,14 @@ public class CaseAttributesFinder {
 
         CaseAttributes caseAttributes = null;
         
-        // @todo This is may return the wrong dates for a multipart specimen.
+        // @todo This may return the wrong dates for a multipart specimen.
         //       Note the "top 1" restriction. Since we don't have easy access
         //       to the part that is the subject of the molecular testing and
         //       the collection dates for the parts are generally the same,
         //       this doesn't seem like a big deal to me. -GHS 4/11/18
         String SQL =
           " select top 1 "
+        + "   dbo.c_specimen.specimen_id, "
         + "   dbo.c_specimen.specnum_formatted, "
         + "   dbo.r_medrec.medrec_num, "
         + "   dbo.r_pat_demograph.date_of_birth, "
