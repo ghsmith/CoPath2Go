@@ -47,8 +47,13 @@ public class CreateCmp26GoManifest {
     // standard output = GO manifest
     // args[0] = JDBC URL for CoPath database
     // args[1] = GO merge utility (e.g., "python merge.pex")
-    public static void main(String[] args) throws ParseException, IOException, ClassNotFoundException, SQLException {  
+    public static void main(String[] args) throws ParseException, IOException, ClassNotFoundException, SQLException, InterruptedException {  
 
+        String pythonMerge = null;
+        if(args.length > 1) {
+            pythonMerge = args[1];
+        }
+        
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
         SimpleDateFormat sdfTimestamp = new SimpleDateFormat("yyyyMMddHHmm");
 
@@ -81,10 +86,19 @@ public class CreateCmp26GoManifest {
 
         BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
         String inLine;
-        while (((inLine = stdIn.readLine()) != null && inLine.length() != 0) && !"[Data]".equals(inLine)) {
+        while(((inLine = stdIn.readLine()) != null) && !"[Data]".equals(inLine)) {
         }
-        while (((inLine = stdIn.readLine()) != null && inLine.length() != 0)) {
+        stdIn.readLine();
+        String lastSampleName = null;
+        while(((inLine = stdIn.readLine()) != null)) {
             String sampleName = inLine.split(",")[1];
+            // Illumina samples are paired (pool A, pool B) and appear contiguously
+            if(lastSampleName != null && lastSampleName.equals(sampleName)) {
+                continue;
+            }
+            else {
+                lastSampleName = sampleName;
+            }
             Pattern patternSampleName = Pattern.compile("^([^-]+)-([0-9]+)-.*$");
             Matcher matcherSampleName = patternSampleName.matcher(sampleName);
             if(!matcherSampleName.matches()) {
@@ -118,6 +132,29 @@ public class CreateCmp26GoManifest {
                 }
             }
             System.out.println();
+            if(pythonMerge != null) {
+                String mergeCommandLine = String.format(
+                    pythonMerge + " --bam_path %s" + " --bam_path %s" + " --frebayes_vcf_path %s" + " --gatk_vcf_path %s" + " --varscan_vcf_path %s" + " %s %s",
+                    "Data/Intensities/BaseCalls/Alt_Alignment/" + sampleName + ".A.bwa-mem.final.bam",
+                    "Data/Intensities/BaseCalls/Alt_Alignment/" + sampleName + ".B.bwa-mem.final.bam",
+                    "Data/Intensities/BaseCalls/Alt_Alignment/" + sampleName + ".freebayes_all.bwa-mem.final.vcf",
+                    "Data/Intensities/BaseCalls/Alt_Alignment/" + sampleName + ".gatk_all.bwa-mem.final.vcf",
+                    "Data/Intensities/BaseCalls/Alt_Alignment/" + sampleName + ".varscan_all.bwa-mem.final.vcf",
+                    "Data/Intensities/BaseCalls/Alt_Alignment/" + sampleName + ".merged.go.bam",
+                    "Data/Intensities/BaseCalls/Alt_Alignment/" + sampleName + ".merged.go.vcf"
+                );
+                System.err.println(mergeCommandLine);
+                Process p = Runtime.getRuntime().exec(mergeCommandLine);
+                int mergeReturnCode = p.waitFor();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+                String line;	
+                while((line = reader.readLine()) != null) {
+                    System.err.println(line);
+                }                    
+                if(mergeReturnCode != 0) {
+                    throw new RuntimeException("merge error");
+                }
+            }
         }
             
         conn.close();
