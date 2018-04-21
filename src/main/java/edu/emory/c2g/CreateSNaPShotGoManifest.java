@@ -1,16 +1,41 @@
 package edu.emory.c2g;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.List;
 
-public class AddPendingCasesToSNaPShotGoManifest {
+public class CreateSNaPShotGoManifest {
 
+    public static List<String> columnNames = Arrays.asList(new String[] {
+         "run_id"
+        ,"sample_category"
+        ,"sample_id"
+        ,"stabilization"
+        ,"order_id"
+        ,"order_date"
+        ,"test"
+        ,"disease_name"
+        ,"mrn"
+        ,"first_name"
+        ,"last_name"
+        ,"middle_initial"
+        ,"gender"
+        ,"dob"
+        ,"ordering_physician"
+        ,"ordering_physician_suffix"
+        ,"ordering_physician_institute"
+        ,"percent_tumor_nuclei"
+        ,"diagnosis"
+        ,"specimen_type"
+        ,"specimen_collected"
+        ,"specimen_received"
+        ,"emory_run_id"
+        ,"emory_order_id"            
+    });
+    
     public static void main(String[] args) throws ParseException, IOException, ClassNotFoundException, SQLException {  
 
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
@@ -19,20 +44,17 @@ public class AddPendingCasesToSNaPShotGoManifest {
         String timestamp = sdfTimestamp.format(new java.util.Date());
         
         Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");  
-        Connection conn = DriverManager.getConnection("jdbc:sqlserver://xxx:1433;databaseName=xxx;user=xxx;password=xxx");
+        Connection conn = DriverManager.getConnection(args[0]);
         
         SNaPShotProcedureFinder sNaPShotProcedureFinder = new SNaPShotProcedureFinder(conn);
         CaseAttributesFinder caseAttributesFinder = new CaseAttributesFinder(conn);
-        
-        BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
-        String tsvLine;
-        while (((tsvLine = stdIn.readLine()) != null && tsvLine.length() != 0) & !"samples".equals(tsvLine)) {
-            System.out.println(tsvLine);
+
+        System.out.println("samples");
+        for(int columnNumber = 0; columnNumber < columnNames.size(); columnNumber++) {
+            if(columnNumber > 0) { System.out.print("\t"); }
+            System.out.print(columnNames.get(columnNumber));
         }
-        System.out.println(tsvLine); // this line is "samples"
-        tsvLine = stdIn.readLine();
-        System.out.println(tsvLine); // this line is the column headings
-        List<String> columnNames = Arrays.asList(tsvLine.split("\t"));
+        System.out.println();
         
         for(SNaPShotProcedure sNaPShotProcedure : sNaPShotProcedureFinder.getPending()) {
             CaseAttributes caseAttributes = caseAttributesFinder.getBySpecimenId(sNaPShotProcedure.specimenId);
