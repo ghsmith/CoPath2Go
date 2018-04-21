@@ -1,8 +1,10 @@
 package edu.emory.c2g;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.*;
 import java.text.ParseException;
@@ -133,8 +135,11 @@ public class CreateCmp26GoManifest {
             }
             System.out.println();
             if(pythonMerge != null) {
+                Files.deleteIfExists(new File("Data/Intensities/BaseCalls/Alt_Alignment/" + sampleName + ".merged.go.bam").toPath());
+                Files.deleteIfExists(new File("Data/Intensities/BaseCalls/Alt_Alignment/" + sampleName + ".merged.go.bam.bai").toPath());
+                Files.deleteIfExists(new File("Data/Intensities/BaseCalls/Alt_Alignment/" + sampleName + ".merged.go.vcf").toPath());
                 String mergeCommandLine = String.format(
-                    pythonMerge + " --bam_path %s" + " --bam_path %s" + " --frebayes_vcf_path %s" + " --gatk_vcf_path %s" + " --varscan_vcf_path %s" + " %s %s",
+                    pythonMerge + " --bam_path %s" + " --bam_path %s" + " --freebayes_vcf_path %s" + " --gatk_vcf_path %s" + " --varscan_vcf_path %s" + " %s %s",
                     "Data/Intensities/BaseCalls/Alt_Alignment/" + sampleName + ".A.bwa-mem.final.bam",
                     "Data/Intensities/BaseCalls/Alt_Alignment/" + sampleName + ".B.bwa-mem.final.bam",
                     "Data/Intensities/BaseCalls/Alt_Alignment/" + sampleName + ".freebayes_all.bwa-mem.final.vcf",
@@ -144,14 +149,22 @@ public class CreateCmp26GoManifest {
                     "Data/Intensities/BaseCalls/Alt_Alignment/" + sampleName + ".merged.go.vcf"
                 );
                 System.err.println(mergeCommandLine);
-                Process p = Runtime.getRuntime().exec(mergeCommandLine);
-                int mergeReturnCode = p.waitFor();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-                String line;	
-                while((line = reader.readLine()) != null) {
-                    System.err.println(line);
+                ProcessBuilder pb = new ProcessBuilder(Arrays.asList(mergeCommandLine.split(" ")));
+                pb.redirectErrorStream(true);
+                Process p = pb.start();
+                BufferedReader mergeReader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+                while(p.isAlive()) {
+                    Thread.sleep(100);
+                    String line = mergeReader.readLine();
+                    if(line != null) {
+                        System.err.println(line);
+                    }
                 }                    
-                if(mergeReturnCode != 0) {
+                String line = mergeReader.readLine();
+                if(line != null) {
+                    System.err.println(line);
+                }
+                if(p.exitValue() != 0) {
                     throw new RuntimeException("merge error");
                 }
             }
