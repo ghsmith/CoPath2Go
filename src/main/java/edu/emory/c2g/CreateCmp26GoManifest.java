@@ -3,6 +3,7 @@ package edu.emory.c2g;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -148,23 +149,29 @@ public class CreateCmp26GoManifest {
                     "Data/Intensities/BaseCalls/Alt_Alignment/" + sampleName + ".merged.go.bam",
                     "Data/Intensities/BaseCalls/Alt_Alignment/" + sampleName + ".merged.go.vcf"
                 );
+                System.err.println();
                 System.err.println(mergeCommandLine);
+                System.err.println();
                 ProcessBuilder pb = new ProcessBuilder(Arrays.asList(mergeCommandLine.split(" ")));
                 pb.redirectErrorStream(true);
                 Process p = pb.start();
-                BufferedReader mergeReader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-                while(p.isAlive()) {
-                    Thread.sleep(100);
-                    String line = mergeReader.readLine();
-                    if(line != null) {
-                        System.err.println(line);
+                (new Thread() {
+                    BufferedReader pReader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+                    public void run() {
+                        try {
+                            String pLine = pReader.readLine();
+                            while (pLine != null) {
+                                System.err.println(pLine);
+                                pLine = pReader.readLine();
+                            }
+                            pReader.close();                        
+                        }
+                        catch(IOException ex) {
+                            throw new RuntimeException(ex);
+                        }
                     }
-                }                    
-                String line = mergeReader.readLine();
-                if(line != null) {
-                    System.err.println(line);
-                }
-                if(p.exitValue() != 0) {
+                }).start();
+                if(p.waitFor() != 0) {
                     throw new RuntimeException("merge error");
                 }
             }
