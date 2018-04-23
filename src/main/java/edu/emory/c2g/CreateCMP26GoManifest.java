@@ -78,7 +78,7 @@ public class CreateCMP26GoManifest {
 
         System.out.println("runs");
         System.out.println(String.format("%s\t%s\t%s\t%s", "run_id", "platform", "run_type", "run_data_location"));
-        System.out.println(String.format("%s\t%s\t%s\t%s", illuminaRunName + "_" + timestamp, platform, platform, goMount));
+        System.out.println(String.format("%s\t%s\t%s\t%s", illuminaRunName + "_" + timestamp, platform, platform, goMount + "/" + illuminaRunName));
         
         System.out.println("samples");
         for(int columnNumber = 0; columnNumber < columnNames.size(); columnNumber++) {
