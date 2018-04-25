@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 
 public class CreateCMP26GoManifest {  
 
-    public static String goMount = "/mount/illumina_runs01";
+    public static String goMount = "/illumina_runs01";
     
     public static List<String> columnNames = Arrays.asList(new String[] {
         "run_id"
@@ -42,6 +42,7 @@ public class CreateCMP26GoManifest {
         ,"specimen_received"
         ,"emory_run_id"
         ,"emory_order_id"
+        ,"emory_base_file_url"
     });
     
     // current directory must be root of Illumina run directory
@@ -122,6 +123,7 @@ public class CreateCMP26GoManifest {
                     case "disease_name": System.out.print("Tumor of Unknown Origin"); break;
                     case "emory_run_id": System.out.print(illuminaRunName); break;
                     case "emory_order_id": System.out.print(sampleName); break;
+                    case "emory_base_file_url": System.out.print(illuminaRunName.substring(0, 6).replaceAll("(..)(..)(..)", "file:///Q:/Pathology%20and%20EML/CLINICAL%20SPECIMENS/20$1/20$1-$2/20$1-$2-$3/Alt_Alignment")); break;
                     case "mrn": System.out.print(caseAttributes.mrn); break;
                     case "first_name": System.out.print(caseAttributes.firstName); break;
                     case "last_name": System.out.print(caseAttributes.lastName); break;
