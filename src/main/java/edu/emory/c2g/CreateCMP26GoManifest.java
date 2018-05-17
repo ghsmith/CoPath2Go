@@ -10,6 +10,7 @@ import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -51,6 +52,8 @@ public class CreateCMP26GoManifest {
     // args[0] = JDBC URL for CoPath database
     // args[1] = GO merge utility (e.g., "python merge.pex")
     public static void main(String[] args) throws ParseException, IOException, ClassNotFoundException, SQLException, InterruptedException {  
+
+        List<Process> processList = new ArrayList<>();
 
         String pythonMerge = null;
         if(args.length > 1) {
@@ -165,7 +168,7 @@ public class CreateCMP26GoManifest {
                         try {
                             String pLine = pReader.readLine();
                             while (pLine != null) {
-                                System.err.println(pLine);
+                                System.err.println(sampleName + ": " + pLine);
                                 pLine = pReader.readLine();
                             }
                             pReader.close();                        
@@ -175,13 +178,17 @@ public class CreateCMP26GoManifest {
                         }
                     }
                 }).start();
-                if(p.waitFor() != 0) {
-                    throw new RuntimeException("merge error");
-                }
+                processList.add(p);
             }
         }
             
         conn.close();
+
+        for(Process p : processList) {
+          if(p.waitFor() != 0) {
+            throw new RuntimeException("merge error");
+          }
+        }
         
         System.err.println("CMP 26 GO Manifest creation complete");
         System.exit(0);
