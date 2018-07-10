@@ -44,6 +44,7 @@ public class CreateCMP26GoManifest {
         ,"emory_run_id"
         ,"emory_order_id"
         ,"emory_base_file_url"
+        ,"emory_coverage_statement"
     });
     
     // current directory must be root of Illumina run directory
@@ -138,6 +139,38 @@ public class CreateCMP26GoManifest {
                     case "specimen_collected": System.out.print(sdf.format(caseAttributes.dateCollected)); break;
                     case "specimen_received": System.out.print(sdf.format(caseAttributes.dateAccessioned)); break;
                     case "order_date": System.out.print(cMP26Procedure != null && cMP26Procedure.dateOrdered != null ? sdf.format(cMP26Procedure.dateOrdered) : ""); break;
+                    case "emory_coverage_statement":
+                        {
+                            String coverageQcCommandLine = String.format(
+                                "java -jar /home/go/coverageQc/dist/coverageQc.jar %s",
+                                "Data/Intensities/BaseCalls/Alt_Alignment/" + sampleName + ".bwa-mem.mpileup_all.noe.genome.vcf"
+                            );
+                            System.err.println();
+                            System.err.println(coverageQcCommandLine);
+                            System.err.println();
+                            ProcessBuilder pb = new ProcessBuilder(Arrays.asList(coverageQcCommandLine.split(" ")));
+                            Process p = pb.start();
+                            (new Thread() {
+                                BufferedReader pReader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+                                public void run() {
+                                    try {
+                                        String pLine = pReader.readLine();
+                                        while (pLine != null) {
+                                            System.err.println(sampleName + ": " + pLine);
+                                            System.out.println(pLine);
+                                            pLine = pReader.readLine();
+                                        }
+                                        pReader.close();                        
+                                    }
+                                    catch(IOException ex) {
+                                        throw new RuntimeException(ex);
+                                    }
+                                }
+                            }).start();
+                            processList.add(p);
+                            p.waitFor();
+                        }
+                        break;
                     default: System.out.print(""); break;
                 }
             }
