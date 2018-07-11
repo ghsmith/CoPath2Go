@@ -157,7 +157,7 @@ public class CreateCMP26GoManifest {
                                         String pLine = pReader.readLine();
                                         while (pLine != null) {
                                             System.err.println(sampleName + ": " + pLine);
-                                            System.out.println(pLine);
+                                            System.out.print(pLine);
                                             pLine = pReader.readLine();
                                         }
                                         pReader.close();                        
