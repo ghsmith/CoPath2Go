@@ -140,36 +140,39 @@ public class CreateCMP26GoManifest {
                     case "specimen_received": System.out.print(sdf.format(caseAttributes.dateAccessioned)); break;
                     case "order_date": System.out.print(cMP26Procedure != null && cMP26Procedure.dateOrdered != null ? sdf.format(cMP26Procedure.dateOrdered) : ""); break;
                     case "emory_coverage_statement":
-                        {
-                            String coverageQcCommandLine = String.format(
-                                "java -jar /home/go/coverageQc/dist/coverageQc.jar %s",
-                                "Data/Intensities/BaseCalls/Alt_Alignment/" + sampleName + ".bwa-mem.mpileup_all.noe.genome.vcf"
-                            );
-                            System.err.println();
-                            System.err.println(coverageQcCommandLine);
-                            System.err.println();
-                            ProcessBuilder pb = new ProcessBuilder(Arrays.asList(coverageQcCommandLine.split(" ")));
-                            Process p = pb.start();
-                            (new Thread() {
-                                BufferedReader pReader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-                                public void run() {
-                                    try {
-                                        String pLine = pReader.readLine();
-                                        while (pLine != null) {
-                                            System.err.println(sampleName + ": " + pLine);
-                                            System.out.print(pLine);
-                                            pLine = pReader.readLine();
+                        String coverageQcCommandLine = String.format(
+                            "java -jar /home/go/coverageQc/dist/coverageQc.jar %s",
+                            "Data/Intensities/BaseCalls/Alt_Alignment/" + sampleName + ".bwa-mem.mpileup_all.noe.genome.vcf"
+                        );
+                        System.err.println();
+                        System.err.println(coverageQcCommandLine);
+                        System.err.println();
+                        ProcessBuilder pb = new ProcessBuilder(Arrays.asList(coverageQcCommandLine.split(" ")));
+                        Process p = pb.start();
+                        Thread t = new Thread() {
+                            BufferedReader pReader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+                            public void run() {
+                                try {
+                                    String pLine = pReader.readLine();
+                                    while (pLine != null) {
+                                        System.err.println(sampleName + ": " + pLine);
+                                        if(pLine.length() > 0) {
+                                          System.out.print(pLine);
                                         }
-                                        pReader.close();                        
+                                        pLine = pReader.readLine();
                                     }
-                                    catch(IOException ex) {
-                                        throw new RuntimeException(ex);
-                                    }
+                                    pReader.close();                        
                                 }
-                            }).start();
-                            processList.add(p);
-                            p.waitFor();
+                                catch(IOException ex) {
+                                    throw new RuntimeException(ex);
+                                }
+                            }
+                        };
+                        t.start();
+                        if(p.waitFor() != 0) {
+                            throw new RuntimeException("Coverage QC Report error");
                         }
+                        t.join();
                         break;
                     default: System.out.print(""); break;
                 }
