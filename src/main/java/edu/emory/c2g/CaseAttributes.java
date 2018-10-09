@@ -18,6 +18,9 @@ public class CaseAttributes {
     public String orderingProviderFirstName;
     public String client;
 
+    public CaseAttributes() {
+    }
+    
     public CaseAttributes(ResultSet rs) throws SQLException {
         this.specimenId = rs.getString("specimen_id");
         this.accessionNumber = rs.getString("specnum_formatted");
