@@ -6,10 +6,10 @@ import java.io.InputStreamReader;
 
 public class ArcherSampleFinder {
 
-    String archerIpAddress;
+    public String archerIPAddress;
     
     public ArcherSampleFinder(String archerIPAddress) {
-        this.archerIpAddress = archerIPAddress;
+        this.archerIPAddress = archerIPAddress;
     }
 
     ArcherSampleFinder() {
