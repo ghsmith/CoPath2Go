@@ -39,7 +39,7 @@ public class CaseAttributes {
 
     @Override
     public String toString() {
-        return "CaseAttributes{" + "specimenId=" + specimenId + ", accessionNumber=" + accessionNumber + ", mrn=" + mrn + ", dob=" + dob + ", gender=" + gender + ", lastName=" + lastName + ", firstName=" + firstName + ", middleName=" + middleName + ", dateCollected=" + dateCollected + ", dateAccessioned=" + dateAccessioned + ", orderingProviderLastName=" + orderingProviderLastName + ", orderingProviderFirstName=" + orderingProviderFirstName + ", client=" + client + '}';
+        return "CaseAttributes{" + "specimenId=" + specimenId + ", accessionNumber=" + accessionNumber + ", mrn=" + mrn + ", dob=" + dob + ", gender=" + gender + ", lastName=" + lastName + ", firstName=" + firstName + ", middleName=" + middleName + ", dateCollected=" + dateCollected + ", dateAccessioned=" + dateAccessioned + ", orderingProviderLastName=" + orderingProviderLastName + ", orderingProviderFirstName=" + orderingProviderFirstName + ", client=" + client + "}";
     }
         
 }

@@ -17,7 +17,7 @@ public class CMP26Procedure {
     
     @Override
     public String toString() {
-        return "CMP26Procedure{" + "specimenId=" + specimenId + ", dateOrdered=" + dateOrdered + '}';
+        return "CMP26Procedure{" + "specimenId=" + specimenId + ", dateOrdered=" + dateOrdered + "}";
     }
     
 }

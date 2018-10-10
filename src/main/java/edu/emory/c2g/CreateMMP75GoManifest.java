@@ -45,20 +45,26 @@ public class CreateMMP75GoManifest {
         ,"emory_order_id"
         ,"emory_base_file_url"
         ,"emory_coverage_statement"
+        ,"emory_facility_mrn"
+        ,"emory_archer_case_url"
     });
     
     // current directory must be root of Illumina run directory
     // standard input = Illumina sample sheet
     // standard output = GO manifest
     // args[0] = JDBC URL for CoPath database
-    // args[1] = GO merge utility (e.g., "python merge.pex")
+    // args[1] = Archer job numbers (separated by commas)
+    // args[2] = IP address of Archer VM
+    // args[3] = GO merge utility (e.g., "python merge.pex")
     public static void main(String[] args) throws ParseException, IOException, ClassNotFoundException, SQLException, InterruptedException {  
 
         List<Process> processList = new ArrayList<>();
 
+        String[] archerJobNumbers = args[1].split(",");
+        
         String pythonMerge = null;
-        if(args.length > 1) {
-            pythonMerge = args[1];
+        if(args.length > 3) {
+            pythonMerge = args[3];
         }
         
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
@@ -67,15 +73,13 @@ public class CreateMMP75GoManifest {
         String timestamp = sdfTimestamp.format(new java.util.Date());
 
         String illuminaRunName = Paths.get(System.getProperty("user.dir")).getFileName().toString();
-        //String platform = "Unknown";
-        //if(illuminaRunName.contains("M01382")) {
-        //    platform = "MiSeq";
-        //}
-        //else if(illuminaRunName.contains("NS500796")) {
-        //    platform = "NextSeq";
-        //}
-        
-        String platform = "NextSeq";
+        String platform = "Unknown";
+        if(illuminaRunName.contains("M01382")) {
+            platform = "MiSeq";
+        }
+        else if(illuminaRunName.contains("NS500796")) {
+            platform = "NextSeq";
+        }
         
         //Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");  
         //Connection conn = DriverManager.getConnection(args[0]);
