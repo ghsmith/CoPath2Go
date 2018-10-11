@@ -60,7 +60,7 @@ public class CreateMMP75GoManifest {
 
         List<Process> processList = new ArrayList<>();
 
-        Integer[] archerJobNumbers = (Integer[])Arrays.stream(args[1].split(",")).map((archerJobNumber) -> new Integer(archerJobNumber)).toArray();
+        Integer[] archerJobNumbers = Arrays.stream(args[1].split(",")).map((archerJobNumber) -> new Integer(archerJobNumber)).toArray((size) -> new Integer[size]);
         
         String pythonMerge = null;
         if(args.length > 3) {
