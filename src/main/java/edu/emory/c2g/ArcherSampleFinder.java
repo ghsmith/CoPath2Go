@@ -40,7 +40,7 @@ public class ArcherSampleFinder {
         System.err.println();
         System.err.println(commandLine);
         System.err.println();
-        ProcessBuilder pb = new ProcessBuilder();
+        ProcessBuilder pb = new ProcessBuilder(new String[] {"sh"});
         pb.redirectErrorStream(true);
         Process p = pb.start();
         try (BufferedWriter pWriter = new BufferedWriter(new OutputStreamWriter(p.getOutputStream()))) {
