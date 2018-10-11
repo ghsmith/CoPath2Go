@@ -28,7 +28,7 @@ public class ArcherSampleFinder {
         String commandLine = String.format(
               "(ssh root@%s << EOF\n"
             + "/var/www/html/archer_web/manage.py dbshell\n"
-            + "select id from samples.sample where job_id=%d and name='%s';\n"
+            + "select id from samples.sample where job_id=%d and name like '%s%%';\n"
             + "\\q\n"
             + "exit\n"
             + "EOF\n"

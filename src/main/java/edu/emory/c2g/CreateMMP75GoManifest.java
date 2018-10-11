@@ -131,7 +131,7 @@ public class CreateMMP75GoManifest {
             
             ArcherSample archerSample = null;
             for(Integer archerJobNumber: archerJobNumbers) {
-                archerSample = archerSampleFinder.getByJobNumberAndSampleName(archerJobNumber, sampleName + "_R1_001");
+                archerSample = archerSampleFinder.getByJobNumberAndSampleName(archerJobNumber, sampleName);
                 if(archerSample != null) {
                     break;
                 }
