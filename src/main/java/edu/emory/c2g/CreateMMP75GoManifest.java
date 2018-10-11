@@ -60,7 +60,7 @@ public class CreateMMP75GoManifest {
 
         List<Process> processList = new ArrayList<>();
 
-        String[] archerJobNumbers = args[1].split(",");
+        Integer[] archerJobNumbers = (Integer[])Arrays.stream(args[1].split(",")).map((archerJobNumber) -> new Integer(archerJobNumber)).toArray();
         
         String pythonMerge = null;
         if(args.length > 3) {
@@ -86,7 +86,7 @@ public class CreateMMP75GoManifest {
         
         CaseAttributesFinder caseAttributesFinder = new CaseAttributesFinder(conn);
         MMP75ProcedureFinder mMP75ProcedureFinder = new MMP75ProcedureFinder(conn);
-        ArcherSampleFinder archerSamplefinder = new ArcherSampleFinder(args[2]);
+        ArcherSampleFinder archerSampleFinder = new ArcherSampleFinder(args[2]);
 
         System.out.println("runs");
         System.out.println(String.format("%s\t%s\t%s\t%s", "run_id", "platform", "run_type", "run_data_location"));
@@ -127,11 +127,14 @@ public class CreateMMP75GoManifest {
             caseAttributes.dateCollected = new Date(new java.util.Date().getTime());
             caseAttributes.dateCollected = new Date(new java.util.Date().getTime());
             caseAttributes.dateAccessioned = new Date(new java.util.Date().getTime());
-            CMP26Procedure cMP26Procedure = new CMP26Procedure();
+            MMP75Procedure mMP75Procedure = new MMP75Procedure();
             
             ArcherSample archerSample = null;
-            for(String archerJobNumber: archerJobNumbers) {
-                //archerSample = 
+            for(Integer archerJobNumber: archerJobNumbers) {
+                archerSample = archerSampleFinder.getByJobNumberAndSampleName(archerJobNumber, sampleName + "_R1_001");
+                if(archerSample != null) {
+                    break;
+                }
             }
             
             for(int columnNumber = 0; columnNumber < columnNames.size(); columnNumber++) {
@@ -148,6 +151,7 @@ public class CreateMMP75GoManifest {
                     case "emory_order_id": System.out.print(sampleName); break;
                     case "emory_base_file_url": System.out.print("https://patheuhmollabserv2.eushc.org/illumina_runs01/" + illuminaRunName + "/Data/Intensities/BaseCalls/Archer_Run"); break;
                     case "mrn": System.out.print(caseAttributes.empi); break;
+                    case "emory_facility_mrn": System.out.print(caseAttributes.mrn); break;
                     case "first_name": System.out.print(caseAttributes.firstName); break;
                     case "last_name": System.out.print(caseAttributes.lastName); break;
                     case "middle_initial": System.out.print(caseAttributes.middleName != null && caseAttributes.middleName.length() > 0 ? caseAttributes.middleName.substring(0, 1) : ""); break;
@@ -157,10 +161,9 @@ public class CreateMMP75GoManifest {
                     case "ordering_physician_institute": System.out.print(caseAttributes.client); break;
                     case "specimen_collected": System.out.print(sdf.format(caseAttributes.dateCollected)); break;
                     case "specimen_received": System.out.print(sdf.format(caseAttributes.dateAccessioned)); break;
-                    case "order_date": System.out.print(cMP26Procedure != null && cMP26Procedure.dateOrdered != null ? sdf.format(cMP26Procedure.dateOrdered) : ""); break;
-                    case "emory_coverage_statement": System.out.print(""); break;
-                    case "emory_facility_mrn": System.out.print(caseAttributes.mrn); break;
-                    case "emory_archer_case_url": System.out.print(""); break;
+                    case "order_date": System.out.print(mMP75Procedure != null && mMP75Procedure.dateOrdered != null ? sdf.format(mMP75Procedure.dateOrdered) : ""); break;
+                    case "emory_archer_case_url": System.out.print("https://patheuhmollabserv2.eushc.org:14443/job/" + archerSample.archerJobNumber + "/sample/" + archerSample.archerSampleNumber + "/read-statistics"); break;
+                    case "emory_coverage_statement": System.out.print("[NO COVERAGE STATEMENT]"); break;
                     default: System.out.print(""); break;
                 }
             }
