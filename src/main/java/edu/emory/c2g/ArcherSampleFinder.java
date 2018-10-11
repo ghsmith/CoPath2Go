@@ -53,9 +53,11 @@ public class ArcherSampleFinder {
                     String pLine = pReader.readLine();
                     while (pLine != null) {
                         System.err.println(archerSampleName + ": " + pLine);
-                        archerSample[0] = new ArcherSample();
-                        archerSample[0].archerJobNumber = archerJobNumber;
-                        archerSample[0].archerSampleNumber = new Integer(pLine.trim());
+                        if(!"(0 rows)".equals(pLine)) {
+                            archerSample[0] = new ArcherSample();
+                            archerSample[0].archerJobNumber = archerJobNumber;
+                            archerSample[0].archerSampleNumber = new Integer(pLine.trim());
+                        }
                         pLine = pReader.readLine();
                     }
                     pReader.close();                        
