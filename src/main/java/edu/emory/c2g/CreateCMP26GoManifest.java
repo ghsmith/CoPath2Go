@@ -226,7 +226,7 @@ public class CreateCMP26GoManifest {
           }
         }
         
-        System.err.println("CMP 26 GO Manifest creation complete");
+        System.err.println("CMP26 GO Manifest creation complete");
         System.exit(0);
 
     }  

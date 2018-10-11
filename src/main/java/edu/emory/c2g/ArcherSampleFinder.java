@@ -1,9 +1,14 @@
 package edu.emory.c2g;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 
+/**
+ * Make sure that SSH key pair authentication is configured.
+ */
 public class ArcherSampleFinder {
 
     public String archerIPAddress;
@@ -35,9 +40,12 @@ public class ArcherSampleFinder {
         System.err.println();
         System.err.println(commandLine);
         System.err.println();
-        ProcessBuilder pb = new ProcessBuilder(commandLine);
+        ProcessBuilder pb = new ProcessBuilder();
         pb.redirectErrorStream(true);
         Process p = pb.start();
+        try (BufferedWriter pWriter = new BufferedWriter(new OutputStreamWriter(p.getOutputStream()))) {
+            pWriter.write(commandLine);
+        }
         (new Thread() {
             BufferedReader pReader = new BufferedReader(new InputStreamReader(p.getInputStream()));
             public void run() {
@@ -45,10 +53,10 @@ public class ArcherSampleFinder {
                     String pLine = pReader.readLine();
                     while (pLine != null) {
                         System.err.println(archerSampleName + ": " + pLine);
-                        pLine = pReader.readLine();
                         archerSample[0] = new ArcherSample();
                         archerSample[0].archerJobNumber = archerJobNumber;
-                        archerSample[0].archerSampleNumber = new Integer(pLine);
+                        archerSample[0].archerSampleNumber = new Integer(pLine.trim());
+                        pLine = pReader.readLine();
                     }
                     pReader.close();                        
                 }
@@ -57,6 +65,7 @@ public class ArcherSampleFinder {
                 }
             }
         }).start();
+        
         p.waitFor();
         
         return archerSample[0];

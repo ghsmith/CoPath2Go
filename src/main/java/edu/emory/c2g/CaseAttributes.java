@@ -17,6 +17,7 @@ public class CaseAttributes {
     public String orderingProviderLastName;
     public String orderingProviderFirstName;
     public String client;
+    public String empi;
 
     public CaseAttributes() {
     }
@@ -35,11 +36,12 @@ public class CaseAttributes {
         this.orderingProviderLastName = rs.getString("ordering_provider_lastname");
         this.orderingProviderFirstName = rs.getString("ordering_provider_firstname");
         this.client = rs.getString("client");
+        this.empi = rs.getString("empi");
     }
 
     @Override
     public String toString() {
-        return "CaseAttributes{" + "specimenId=" + specimenId + ", accessionNumber=" + accessionNumber + ", mrn=" + mrn + ", dob=" + dob + ", gender=" + gender + ", lastName=" + lastName + ", firstName=" + firstName + ", middleName=" + middleName + ", dateCollected=" + dateCollected + ", dateAccessioned=" + dateAccessioned + ", orderingProviderLastName=" + orderingProviderLastName + ", orderingProviderFirstName=" + orderingProviderFirstName + ", client=" + client + "}";
+        return "CaseAttributes{" + "specimenId=" + specimenId + ", accessionNumber=" + accessionNumber + ", mrn=" + mrn + ", dob=" + dob + ", gender=" + gender + ", lastName=" + lastName + ", firstName=" + firstName + ", middleName=" + middleName + ", dateCollected=" + dateCollected + ", dateAccessioned=" + dateAccessioned + ", orderingProviderLastName=" + orderingProviderLastName + ", orderingProviderFirstName=" + orderingProviderFirstName + ", client=" + client + ", empi=" + empi + "}";
     }
         
 }

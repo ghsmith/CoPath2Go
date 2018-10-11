@@ -81,11 +81,12 @@ public class CreateMMP75GoManifest {
             platform = "NextSeq";
         }
         
-        //Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");  
-        //Connection conn = DriverManager.getConnection(args[0]);
+        Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");  
+        Connection conn = DriverManager.getConnection(args[0]);
         
-        //CaseAttributesFinder caseAttributesFinder = new CaseAttributesFinder(conn);
-        //CMP26ProcedureFinder cMP26ProcedureFinder = new CMP26ProcedureFinder(conn);
+        CaseAttributesFinder caseAttributesFinder = new CaseAttributesFinder(conn);
+        MMP75ProcedureFinder mMP75ProcedureFinder = new MMP75ProcedureFinder(conn);
+        ArcherSampleFinder archerSamplefinder = new ArcherSampleFinder(args[2]);
 
         System.out.println("runs");
         System.out.println(String.format("%s\t%s\t%s\t%s", "run_id", "platform", "run_type", "run_data_location"));
@@ -119,6 +120,7 @@ public class CreateMMP75GoManifest {
 
             CaseAttributes caseAttributes = new CaseAttributes();
             caseAttributes.mrn = "0";
+            caseAttributes.empi = "0";
             caseAttributes.firstName = "MMP75";
             caseAttributes.lastName = "VALIDATION";
             caseAttributes.dob = new Date(new java.util.Date().getTime());
@@ -126,6 +128,11 @@ public class CreateMMP75GoManifest {
             caseAttributes.dateCollected = new Date(new java.util.Date().getTime());
             caseAttributes.dateAccessioned = new Date(new java.util.Date().getTime());
             CMP26Procedure cMP26Procedure = new CMP26Procedure();
+            
+            ArcherSample archerSample = null;
+            for(String archerJobNumber: archerJobNumbers) {
+                //archerSample = 
+            }
             
             for(int columnNumber = 0; columnNumber < columnNames.size(); columnNumber++) {
                 if(columnNumber > 0) { System.out.print("\t"); }
@@ -140,7 +147,7 @@ public class CreateMMP75GoManifest {
                     case "emory_run_id": System.out.print(illuminaRunName); break;
                     case "emory_order_id": System.out.print(sampleName); break;
                     case "emory_base_file_url": System.out.print("https://patheuhmollabserv2.eushc.org/illumina_runs01/" + illuminaRunName + "/Data/Intensities/BaseCalls/Archer_Run"); break;
-                    case "mrn": System.out.print(caseAttributes.mrn); break;
+                    case "mrn": System.out.print(caseAttributes.empi); break;
                     case "first_name": System.out.print(caseAttributes.firstName); break;
                     case "last_name": System.out.print(caseAttributes.lastName); break;
                     case "middle_initial": System.out.print(caseAttributes.middleName != null && caseAttributes.middleName.length() > 0 ? caseAttributes.middleName.substring(0, 1) : ""); break;
@@ -152,6 +159,8 @@ public class CreateMMP75GoManifest {
                     case "specimen_received": System.out.print(sdf.format(caseAttributes.dateAccessioned)); break;
                     case "order_date": System.out.print(cMP26Procedure != null && cMP26Procedure.dateOrdered != null ? sdf.format(cMP26Procedure.dateOrdered) : ""); break;
                     case "emory_coverage_statement": System.out.print(""); break;
+                    case "emory_facility_mrn": System.out.print(caseAttributes.mrn); break;
+                    case "emory_archer_case_url": System.out.print(""); break;
                     default: System.out.print(""); break;
                 }
             }
@@ -204,7 +213,7 @@ public class CreateMMP75GoManifest {
           }
         }
         
-        System.err.println("MMP 75 GO Manifest creation complete");
+        System.err.println("MMP75 GO Manifest creation complete");
         System.exit(0);
 
     }  
