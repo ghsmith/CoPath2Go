@@ -103,8 +103,8 @@ public class CreateMMP75GoManifest {
             if(inLine.split(",").length == 0) {
                 continue;
             }
-            illuminaSampleNumber++;
-            String sampleName = inLine.split(",")[1];
+            //illuminaSampleNumber++;
+            //String sampleName = inLine.split(",")[1];
             //Pattern patternSampleName = Pattern.compile("^([^-]+)-([0-9]+)-.*$");
             //Matcher matcherSampleName = patternSampleName.matcher(sampleName);
             //if(!matcherSampleName.matches()) {
@@ -114,9 +114,18 @@ public class CreateMMP75GoManifest {
             //CaseAttributes caseAttributes = caseAttributesFinder.getByAccessionNumber(accessionNumber);
             //CMP26Procedure cMP26Procedure = cMP26ProcedureFinder.getBySpecimenId(caseAttributes.specimenId);
 
+            // JUST FOR THE VALIDATION CASES WHERE WE'VE BAKED IN THE SAMPLE NUMBER
+            String sampleNameAndNumber = inLine.split(",")[1];
+            Pattern patternSampleNameAndNumber = Pattern.compile("^(.*)_S([0-9]+)$");
+            Matcher matcherSampleNameAndNumber = patternSampleNameAndNumber.matcher(sampleNameAndNumber);
+            if(!matcherSampleNameAndNumber.matches()) {
+                throw new RuntimeException("can't parse sample name " + sampleNameAndNumber);
+            }
+            String sampleName = matcherSampleNameAndNumber.group(1);
+            illuminaSampleNumber = Integer.valueOf(matcherSampleNameAndNumber.group(2));
             CaseAttributes caseAttributes = new CaseAttributes();
-            caseAttributes.mrn = "0";
-            caseAttributes.empi = "0";
+            caseAttributes.mrn = "100";
+            caseAttributes.empi = "100";
             caseAttributes.firstName = "MMP75";
             caseAttributes.lastName = "VALIDATION";
             caseAttributes.dob = new Date(new java.util.Date().getTime());
@@ -127,7 +136,7 @@ public class CreateMMP75GoManifest {
  
             ArcherSample archerSample = null;
             for(Integer archerJobNumber: archerJobNumbers) {
-                archerSample = archerSampleFinder.getByJobNumberAndSampleName(archerJobNumber, sampleName + "_S" + illuminaSampleNumber);
+                archerSample = archerSampleFinder.getByJobNumberAndSampleName(archerJobNumber, sampleName + "_S" + illuminaSampleNumber + "_R1_001");
                 if(archerSample != null) {
                     break;
                 }
