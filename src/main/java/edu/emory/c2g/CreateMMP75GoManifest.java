@@ -98,10 +98,12 @@ public class CreateMMP75GoManifest {
         while(((inLine = stdIn.readLine()) != null) && !inLine.startsWith("[Data]")) {
         }
         stdIn.readLine();
+        int illuminaSampleNumber = 0;
         while(((inLine = stdIn.readLine()) != null)) {
             if(inLine.split(",").length == 0) {
                 continue;
             }
+            illuminaSampleNumber++;
             String sampleName = inLine.split(",")[1];
             //Pattern patternSampleName = Pattern.compile("^([^-]+)-([0-9]+)-.*$");
             //Matcher matcherSampleName = patternSampleName.matcher(sampleName);
@@ -125,7 +127,7 @@ public class CreateMMP75GoManifest {
  
             ArcherSample archerSample = null;
             for(Integer archerJobNumber: archerJobNumbers) {
-                archerSample = archerSampleFinder.getByJobNumberAndSampleName(archerJobNumber, sampleName);
+                archerSample = archerSampleFinder.getByJobNumberAndSampleName(archerJobNumber, sampleName + "_S" + illuminaSampleNumber);
                 if(archerSample != null) {
                     break;
                 }
@@ -136,13 +138,13 @@ public class CreateMMP75GoManifest {
                 switch(columnNames.get(columnNumber)) {
                     case "run_id": System.out.print(illuminaRunName + "_" + timestamp); break;
                     case "sample_category": System.out.print("Patient Sample"); break;
-                    case "sample_id": System.out.print(sampleName); break;
+                    case "sample_id": System.out.print(sampleName + "_S" + illuminaSampleNumber); break;
                     case "stabilization": System.out.print("default"); break;
-                    case "order_id": System.out.print(sampleName + "_" + timestamp); break;
+                    case "order_id": System.out.print(sampleName + "_S" + illuminaSampleNumber + "_" + timestamp); break;
                     case "test": System.out.print("Myeloid Mutation Panel 75 (" + platform + ")"); break;
                     case "disease_name": System.out.print("Tumor of Unknown Origin"); break;
                     case "emory_run_id": System.out.print(illuminaRunName); break;
-                    case "emory_order_id": System.out.print(sampleName); break;
+                    case "emory_order_id": System.out.print(sampleName + "_S" + illuminaSampleNumber); break;
                     case "emory_base_file_url": System.out.print("https://patheuhmollabserv2.eushc.org/illumina_runs01/" + illuminaRunName + "/Data/Intensities/BaseCalls/Archer_Run"); break;
                     case "mrn": System.out.print(caseAttributes.empi); break;
                     case "emory_facility_mrn": System.out.print(caseAttributes.mrn); break;
