@@ -103,37 +103,17 @@ public class CreateMMP75GoManifest {
             if(inLine.split(",").length == 0) {
                 continue;
             }
-            //illuminaSampleNumber++;
-            //String sampleName = inLine.split(",")[1];
-            //Pattern patternSampleName = Pattern.compile("^([^-]+)-([0-9]+)-.*$");
-            //Matcher matcherSampleName = patternSampleName.matcher(sampleName);
-            //if(!matcherSampleName.matches()) {
-            //    throw new RuntimeException("can't parse sample name " + sampleName);
-            //}
-            //String accessionNumber = String.format("%s-%s", matcherSampleName.group(1).toUpperCase(), new Integer(matcherSampleName.group(2)));
-            //CaseAttributes caseAttributes = caseAttributesFinder.getByAccessionNumber(accessionNumber);
-            //CMP26Procedure cMP26Procedure = cMP26ProcedureFinder.getBySpecimenId(caseAttributes.specimenId);
-
-            // JUST FOR THE VALIDATION CASES WHERE WE'VE BAKED IN THE SAMPLE NUMBER
-            String sampleNameAndNumber = inLine.split(",")[1];
-            Pattern patternSampleNameAndNumber = Pattern.compile("^(.*)_S([0-9]+)$");
-            Matcher matcherSampleNameAndNumber = patternSampleNameAndNumber.matcher(sampleNameAndNumber);
-            if(!matcherSampleNameAndNumber.matches()) {
-                throw new RuntimeException("can't parse sample name " + sampleNameAndNumber);
+            illuminaSampleNumber++;
+            String sampleName = inLine.split(",")[1];
+            Pattern patternSampleName = Pattern.compile("^([^-]+)-([0-9]+)-.*$");
+            Matcher matcherSampleName = patternSampleName.matcher(sampleName);
+            if(!matcherSampleName.matches()) {
+                throw new RuntimeException("can't parse sample name " + sampleName);
             }
-            String sampleName = matcherSampleNameAndNumber.group(1);
-            illuminaSampleNumber = Integer.valueOf(matcherSampleNameAndNumber.group(2));
-            CaseAttributes caseAttributes = new CaseAttributes();
-            caseAttributes.mrn = "100";
-            caseAttributes.empi = "100";
-            caseAttributes.firstName = "MMP75";
-            caseAttributes.lastName = "VALIDATION";
-            caseAttributes.dob = new Date(new java.util.Date().getTime());
-            caseAttributes.dateCollected = new Date(new java.util.Date().getTime());
-            caseAttributes.dateCollected = new Date(new java.util.Date().getTime());
-            caseAttributes.dateAccessioned = new Date(new java.util.Date().getTime());
-            MMP75Procedure mMP75Procedure = new MMP75Procedure();
- 
+            String accessionNumber = String.format("%s-%s", matcherSampleName.group(1).toUpperCase(), new Integer(matcherSampleName.group(2)));
+            CaseAttributes caseAttributes = caseAttributesFinder.getByAccessionNumber(accessionNumber);
+            MMP75Procedure mMP75Procedure = mMP75ProcedureFinder.getBySpecimenId(caseAttributes.specimenId);
+
             ArcherSample archerSample = null;
             for(Integer archerJobNumber: archerJobNumbers) {
                 archerSample = archerSampleFinder.getByJobNumberAndSampleName(archerJobNumber, sampleName + "_S" + illuminaSampleNumber + "_R1_001");
@@ -151,7 +131,7 @@ public class CreateMMP75GoManifest {
                     case "stabilization": System.out.print("default"); break;
                     case "order_id": System.out.print(sampleName + "_S" + illuminaSampleNumber + "_" + timestamp); break;
                     case "test": System.out.print("Myeloid Mutation Panel 75 (" + platform + ")"); break;
-                    case "disease_name": System.out.print("Tumor of Unknown Origin"); break;
+                    case "disease_name": System.out.print("Hematopoietic and Lymphoid System Disorder"); break;
                     case "emory_run_id": System.out.print(illuminaRunName); break;
                     case "emory_order_id": System.out.print(sampleName + "_S" + illuminaSampleNumber); break;
                     case "emory_base_file_url": System.out.print("https://patheuhmollabserv2.eushc.org/illumina_runs01/" + illuminaRunName + "/Data/Intensities/BaseCalls/Archer_Run"); break;
@@ -167,7 +147,7 @@ public class CreateMMP75GoManifest {
                     case "specimen_collected": System.out.print(sdf.format(caseAttributes.dateCollected)); break;
                     case "specimen_received": System.out.print(sdf.format(caseAttributes.dateAccessioned)); break;
                     case "order_date": System.out.print(mMP75Procedure != null && mMP75Procedure.dateOrdered != null ? sdf.format(mMP75Procedure.dateOrdered) : ""); break;
-                    case "emory_archer_case_url": System.out.print("https://patheuhmollabserv2.eushc.org:14443/job/" + archerSample.archerJobNumber + "/sample/" + archerSample.archerSampleNumber + "/read-statistics"); break;
+                    case "emory_archer_case_url": System.out.print("https://patheuhmollabserv2.eushc.org:13443/job/" + archerSample.archerJobNumber + "/sample/" + archerSample.archerSampleNumber + "/read-statistics"); break;
                     case "emory_coverage_statement": System.out.print("[NO COVERAGE STATEMENT]"); break;
                     default: System.out.print(""); break;
                 }

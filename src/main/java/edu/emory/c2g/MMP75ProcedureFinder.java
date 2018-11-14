@@ -22,7 +22,7 @@ public class MMP75ProcedureFinder {
         + "   dbo.p_special_proc "
         + " where "
         + "   dbo.p_special_proc.specimen_id = ? "
-        + "   and dbo.p_special_proc.sprotype_id = 'emy45' "
+        + "   and dbo.p_special_proc.sprotype_id = 'emy66' "
         + " order by "
         + "   2";
 
