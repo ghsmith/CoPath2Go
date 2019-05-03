@@ -58,6 +58,11 @@ public class ArcherSampleFinder {
                             archerSample[0].archerJobNumber = archerJobNumber;
                             archerSample[0].archerSampleNumber = new Integer(pLine.trim());
                         }
+                        else {
+                            archerSample[0] = new ArcherSample();
+                            archerSample[0].archerJobNumber = archerJobNumber;
+                            archerSample[0].archerSampleNumber = new Integer(0);
+                        }
                         pLine = pReader.readLine();
                     }
                     pReader.close();                        
