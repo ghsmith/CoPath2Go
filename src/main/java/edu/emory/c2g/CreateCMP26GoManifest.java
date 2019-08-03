@@ -157,7 +157,7 @@ public class CreateCMP26GoManifest {
                                     while (pLine != null) {
                                         System.err.println(sampleName + ": " + pLine);
                                         if(pLine.length() > 0) {
-                                          System.out.print(pLine);
+                                          System.out.print(pLine.replaceAll("<br/>$", ""));
                                         }
                                         pLine = pReader.readLine();
                                     }
