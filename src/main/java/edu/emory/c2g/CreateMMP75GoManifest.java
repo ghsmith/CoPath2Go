@@ -149,7 +149,7 @@ public class CreateMMP75GoManifest {
                     case "specimen_collected": System.out.print(sdf.format(caseAttributes.dateCollected)); break;
                     case "specimen_received": System.out.print(sdf.format(caseAttributes.dateAccessioned)); break;
                     case "order_date": System.out.print(mMP75Procedure != null && mMP75Procedure.dateOrdered != null ? sdf.format(mMP75Procedure.dateOrdered) : ""); break;
-                    case "emory_archer_case_url": System.out.print("https://patheuhmollabserv2.eushc.org:13443/job/" + archerSample.archerJobNumber + "/sample/" + archerSample.archerSampleNumber + "/read-statistics"); break;
+                    case "emory_archer_case_url": System.out.print("https://patheuhmollabserv1.eushc.org:13443/job/" + archerSample.archerJobNumber + "/sample/" + archerSample.archerSampleNumber + "/read-statistics"); break;
                     case "emory_coverage_statement": System.out.print("[NO COVERAGE STATEMENT]"); break;
                     default: System.out.print(""); break;
                 }
