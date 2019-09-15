@@ -67,7 +67,8 @@ public class CreateMMP75GoManifest {
         String timestamp = sdfTimestamp.format(new java.util.Date());
 
         String illuminaRunName = Paths.get(System.getProperty("user.dir")).getFileName().toString();
-        String platform = "Unknown";
+        //String platform = "Unknown";
+        String platform = "NextSeq";
         if(illuminaRunName.contains("M01382")) {
             platform = "MiSeq";
         }
@@ -103,7 +104,8 @@ public class CreateMMP75GoManifest {
             if(inLine.split(",").length == 0) {
                 continue;
             }
-            illuminaSampleNumber++;
+            //illuminaSampleNumber++;
+            illuminaSampleNumber = Integer.parseInt(inLine.split("\\|")[1]);
             String sampleName = inLine.split(",")[1];
             Pattern patternSampleName = Pattern.compile("^([^-]+)-([0-9]+)-.*$");
             Matcher matcherSampleName = patternSampleName.matcher(sampleName);
