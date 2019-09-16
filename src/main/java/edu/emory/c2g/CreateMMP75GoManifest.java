@@ -109,12 +109,25 @@ public class CreateMMP75GoManifest {
             String sampleName = inLine.split(",")[1];
             Pattern patternSampleName = Pattern.compile("^([^-]+)-([0-9]+)-.*$");
             Matcher matcherSampleName = patternSampleName.matcher(sampleName);
+            CaseAttributes caseAttributes = null;
+            MMP75Procedure mMP75Procedure = null;
             if(!matcherSampleName.matches()) {
-                throw new RuntimeException("can't parse sample name " + sampleName);
+                //throw new RuntimeException("can't parse sample name " + sampleName);
+                caseAttributes = new CaseAttributes();
+                caseAttributes.empi = "0";
+                caseAttributes.mrn = "0";
+                caseAttributes.firstName = "ZZZNONE";
+                caseAttributes.lastName = "ZZZNONE";
+                caseAttributes.dob = new Date(sdf.parse("01/01/1900").getTime());
+                caseAttributes.client = "ZZZNONE";
+                caseAttributes.dateCollected = new Date(sdf.parse("01/01/1900").getTime());
+                caseAttributes.dateAccessioned = new Date(sdf.parse("01/01/1900").getTime());
             }
-            String accessionNumber = String.format("%s-%s", matcherSampleName.group(1).toUpperCase(), new Integer(matcherSampleName.group(2)));
-            CaseAttributes caseAttributes = caseAttributesFinder.getByAccessionNumber(accessionNumber);
-            MMP75Procedure mMP75Procedure = mMP75ProcedureFinder.getBySpecimenId(caseAttributes.specimenId);
+            else {
+                String accessionNumber = String.format("%s-%s", matcherSampleName.group(1).toUpperCase(), new Integer(matcherSampleName.group(2)));
+                caseAttributes = caseAttributesFinder.getByAccessionNumber(accessionNumber);
+                mMP75Procedure = mMP75ProcedureFinder.getBySpecimenId(caseAttributes.specimenId);
+            }
 
             ArcherSample archerSample = null;
             for(Integer archerJobNumber: archerJobNumbers) {
