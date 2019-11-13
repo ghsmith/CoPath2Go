@@ -85,7 +85,7 @@ public class CreateMMP75GoManifest {
 
         System.out.println("runs");
         System.out.println(String.format("%s\t%s\t%s\t%s", "run_id", "platform", "run_type", "run_data_location"));
-        System.out.println(String.format("%s\t%s\t%s\t%s", illuminaRunName + "_" + timestamp, platform, platform + "-Myeloid", goMount + "/" + illuminaRunName));
+        System.out.println(String.format("%s\t%s\t%s\t%s", illuminaRunName + "_" + timestamp, platform, platform + "-Myeloid-Archer6", goMount + "/" + illuminaRunName));
  
         System.out.println("samples");
         for(int columnNumber = 0; columnNumber < columnNames.size(); columnNumber++) {
@@ -145,7 +145,7 @@ public class CreateMMP75GoManifest {
                     case "sample_id": System.out.print(sampleName + "_S" + illuminaSampleNumber); break;
                     case "stabilization": System.out.print("default"); break;
                     case "order_id": System.out.print(sampleName + "_S" + illuminaSampleNumber + "_" + timestamp); break;
-                    case "test": System.out.print("Myeloid Mutation Panel 75 (" + platform + ")"); break;
+                    case "test": System.out.print("Myeloid Mutation Panel 75 - Archer 6 (" + platform + ")"); break;
                     case "disease_name": System.out.print("Hematopoietic and Lymphoid System Disorder"); break;
                     case "emory_run_id": System.out.print(illuminaRunName); break;
                     case "emory_order_id": System.out.print(sampleName + "_S" + illuminaSampleNumber); break;
