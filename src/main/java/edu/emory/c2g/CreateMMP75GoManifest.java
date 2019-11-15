@@ -108,14 +108,14 @@ public class CreateMMP75GoManifest {
             Pattern patternSampleName = Pattern.compile("^([^-]+)-([0-9]+)-.*$");
             Matcher matcherSampleName = patternSampleName.matcher(sampleName);
             if(!matcherSampleName.matches()) {
-                patternSampleName = Pattern.compile("^VALIDATION-([^-]+)-([0-9]+)-.*$");
+                patternSampleName = Pattern.compile("(?i)^validation-([^-]+)-([0-9]+)-.*$");
                 matcherSampleName = patternSampleName.matcher(sampleName);
                 if(!matcherSampleName.matches()) {
                     throw new RuntimeException("can't parse sample name " + sampleName);
                 }
             }
             String accessionNumber = String.format("%s-%s", matcherSampleName.group(1).toUpperCase(), new Integer(matcherSampleName.group(2)));
-            if(sampleName.startsWith("VALIDATION-")) {
+            if(sampleName.matches("(?i)^validation-.*$")) {
                 System.err.println(String.format("*** '%s' is a validation sample but will use '%s' demographics ***", sampleName, accessionNumber));
             }
             CaseAttributes caseAttributes = caseAttributesFinder.getByAccessionNumber(accessionNumber);
