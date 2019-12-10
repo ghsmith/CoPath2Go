@@ -71,7 +71,7 @@ public class CreateMMP75GoManifest {
         if(illuminaRunName.contains("M01382")) {
             platform = "MiSeq";
         }
-        else if(illuminaRunName.contains("NS500796")) {
+        else if(illuminaRunName.contains("NS500796") || illuminaRunName.contains("NDX550321_RUO")) {
             platform = "NextSeq";
         }
  
