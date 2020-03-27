@@ -100,10 +100,10 @@ public class CreateMMP75GoManifest {
         stdIn.readLine();
         int illuminaSampleNumber = 0;
         while(((inLine = stdIn.readLine()) != null)) {
+            illuminaSampleNumber++;
             if(inLine.split(",").length == 0) {
                 continue;
             }
-            illuminaSampleNumber++;
             String sampleName = inLine.split(",")[1];
             Pattern patternSampleName = Pattern.compile("^([^-]+)-([0-9]+)-.*$");
             Matcher matcherSampleName = patternSampleName.matcher(sampleName);
