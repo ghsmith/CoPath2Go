@@ -115,19 +115,30 @@ public class CreateMMP75GoManifest {
                 continue;
             }
             String sampleName = inLine.split(",")[1];
-            if((args.length >= 5) && args[5].equals("hack")) {
+            if((args.length >= 5) && args[4].equals("hack")) {
                 illuminaSampleNumber = Integer.valueOf(inLine.split(",")[0]);
             }
-            Pattern patternSampleName = Pattern.compile("^([^-]+)-([0-9]+)-.*$");
-            Matcher matcherSampleName = patternSampleName.matcher(sampleName);
-            if(!matcherSampleName.matches()) {
-                patternSampleName = Pattern.compile("(?i)^validation-([^-]+)-([0-9]+)-.*$");
-                matcherSampleName = patternSampleName.matcher(sampleName);
+            String accessionNumber;
+            try {
+                Pattern patternSampleName = Pattern.compile("^([^-]+)-([0-9]+)-.*$");
+                Matcher matcherSampleName = patternSampleName.matcher(sampleName);
                 if(!matcherSampleName.matches()) {
+                    patternSampleName = Pattern.compile("(?i)^validation-([^-]+)-([0-9]+)-.*$");
+                    matcherSampleName = patternSampleName.matcher(sampleName);
+                    if(!matcherSampleName.matches()) {
+                        throw new ParseException("can't parse sample name " + sampleName, 0);
+                    }
+                }
+                accessionNumber = String.format("%s-%s", matcherSampleName.group(1).toUpperCase(), new Integer(matcherSampleName.group(2)));
+            }
+            catch(ParseException e) {
+                if((args.length >= 5) && args[4].equals("hack")) {
+                    accessionNumber = "MD20-185";
+                }
+                else {
                     throw new RuntimeException("can't parse sample name " + sampleName);
                 }
             }
-            String accessionNumber = String.format("%s-%s", matcherSampleName.group(1).toUpperCase(), new Integer(matcherSampleName.group(2)));
             if(sampleName.matches("(?i)^validation-.*$")) {
                 System.err.println(String.format("*** '%s' is a validation sample but will use '%s' demographics ***", sampleName, accessionNumber));
             }
