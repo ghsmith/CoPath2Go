@@ -55,6 +55,8 @@ public class CreateMMP75GoManifest {
     // args[0] = JDBC URL for CoPath database
     // args[1] = Archer job numbers (separated by spaces)
     // args[2] = IP address of Archer VM
+    // args[3] = Archer version
+    // args[4] = hack mode
     public static void main(String[] args) throws ParseException, IOException, ClassNotFoundException, SQLException, InterruptedException {  
 
         List<Process> processList = new ArrayList<>();
@@ -84,8 +86,16 @@ public class CreateMMP75GoManifest {
 
         System.out.println("runs");
         System.out.println(String.format("%s\t%s\t%s\t%s", "run_id", "platform", "run_type", "run_data_location"));
-        System.out.println(String.format("%s\t%s\t%s\t%s", illuminaRunName + "_" + timestamp, platform, platform + "-Myeloid", goMount + "/" + illuminaRunName));
- 
+        if(args.length < 4) {
+            System.out.println(String.format("%s\t%s\t%s\t%s", illuminaRunName + "_" + timestamp, platform, platform + "-Myeloid", goMount + "/" + illuminaRunName));
+        }
+        else if(args[3].equals("6")) {
+            System.out.println(String.format("%s\t%s\t%s\t%s", illuminaRunName + "_" + timestamp, platform, platform + "-Myeloid-Archer6", goMount + "/" + illuminaRunName));
+        }
+        else {
+            throw new RuntimeException("unknown Archer version"); 
+        }
+
         System.out.println("samples");
         for(int columnNumber = 0; columnNumber < columnNames.size(); columnNumber++) {
             if(columnNumber > 0) { System.out.print("\t"); }
@@ -105,6 +115,9 @@ public class CreateMMP75GoManifest {
                 continue;
             }
             String sampleName = inLine.split(",")[1];
+            if((args.length >= 5) && args[5].equals("hack")) {
+                illuminaSampleNumber = Integer.valueOf(inLine.split(",")[0]);
+            }
             Pattern patternSampleName = Pattern.compile("^([^-]+)-([0-9]+)-.*$");
             Matcher matcherSampleName = patternSampleName.matcher(sampleName);
             if(!matcherSampleName.matches()) {
@@ -137,7 +150,17 @@ public class CreateMMP75GoManifest {
                     case "sample_id": System.out.print(sampleName + "_S" + illuminaSampleNumber); break;
                     case "stabilization": System.out.print("default"); break;
                     case "order_id": System.out.print(sampleName + "_S" + illuminaSampleNumber + "_" + timestamp); break;
-                    case "test": System.out.print("Myeloid Mutation Panel 75 (" + platform + ")"); break;
+                    case "test":
+                        if(args.length < 4) {
+                            System.out.print("Myeloid Mutation Panel 75 (" + platform + ")");
+                        }
+                        else if(args[3].equals("6")) {
+                            System.out.print("Myeloid Mutation Panel 75 - Archer 6 (" + platform + ")");
+                        }
+                        else {
+                            throw new RuntimeException("unknown Archer version");
+                        }
+                        break;
                     case "disease_name": System.out.print("Hematopoietic and Lymphoid System Disorder"); break;
                     case "emory_run_id": System.out.print(illuminaRunName); break;
                     case "emory_order_id": System.out.print(sampleName + "_S" + illuminaSampleNumber); break;
