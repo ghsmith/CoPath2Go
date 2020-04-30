@@ -64,7 +64,7 @@ public class CreateCbpStudyFromGoMaf {
                     empi = DatatypeConverter.printHexBinary(digest).substring(0,8);
                 }
                 else {
-                    empi = String.format("unknown-%3d", unknownEmpiCount++);
+                    empi = String.format("unknown%03d", unknownEmpiCount++);
                 }
                 accNoCbpEmpiMap.put(accNoCbp, empi);
             }
