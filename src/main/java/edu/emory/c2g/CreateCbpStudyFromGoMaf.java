@@ -28,6 +28,8 @@ public class CreateCbpStudyFromGoMaf {
     // args[1] = hash seed
     public static void main(String[] args) throws ParseException, IOException, ClassNotFoundException, SQLException, InterruptedException, NoSuchAlgorithmException {  
 
+        int unknownEmpiCount = 1;
+        
         Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");  
         Connection conn = DriverManager.getConnection(args[0]);
  
@@ -55,9 +57,15 @@ public class CreateCbpStudyFromGoMaf {
             String empi = accNoCbpEmpiMap.get(accNoCbp);
             if(empi == null) {
                 MessageDigest md = MessageDigest.getInstance("MD5");
-                md.update((caseAttributesFinder.getByAccessionNumber(accNo).empi + args[1]).getBytes());
-                byte[] digest = md.digest();
-                empi = DatatypeConverter.printHexBinary(digest).substring(0,8);
+                CaseAttributes ca = caseAttributesFinder.getByAccessionNumber(accNo);
+                if(ca != null) {
+                    md.update((ca.empi + args[1]).getBytes());
+                    byte[] digest = md.digest();
+                    empi = DatatypeConverter.printHexBinary(digest).substring(0,8);
+                }
+                else {
+                    empi = String.format("unknown-%3d", unknownEmpiCount++);
+                }
                 accNoCbpEmpiMap.put(accNoCbp, empi);
             }
             System.err.println(String.format("%s: %s", accNoCbp, empi));
