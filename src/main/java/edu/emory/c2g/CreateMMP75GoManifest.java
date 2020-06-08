@@ -152,6 +152,11 @@ public class CreateMMP75GoManifest {
                     break;
                 }
             }
+
+            if(archerSample == null) {
+                System.err.println(String.format("*** skipping sample '%s' because it is not in any Archer run you specified ***", sampleName));
+                continue;
+            }
  
             for(int columnNumber = 0; columnNumber < columnNames.size(); columnNumber++) {
                 if(columnNumber > 0) { System.out.print("\t"); }
