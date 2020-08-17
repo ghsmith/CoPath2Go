@@ -12,9 +12,11 @@ import java.io.OutputStreamWriter;
 public class ArcherSampleFinder {
 
     public String archerIPAddress;
+    public String archerSshPort;
     
-    public ArcherSampleFinder(String archerIPAddress) {
+    public ArcherSampleFinder(String archerIPAddress, String archerSshPort) {
         this.archerIPAddress = archerIPAddress;
+        this.archerSshPort = archerSshPort;
     }
 
     ArcherSampleFinder() {
@@ -26,13 +28,14 @@ public class ArcherSampleFinder {
         final ArcherSample[] archerSample = new ArcherSample[1];
         
         String commandLine = String.format(
-              "(ssh root@%s << EOF\n"
+              "(ssh -p %s root@%s << EOF\n"
             + "/var/www/html/archer_web/manage.py dbshell\n"
             + "select id from samples.sample where job_id=%d and name='%s';\n"
             + "\\q\n"
             + "exit\n"
             + "EOF\n"
             + ") 2>&1 | head -5 | tail -1",
+            archerSshPort,
             archerIPAddress,
             archerJobNumber,
             archerSampleName

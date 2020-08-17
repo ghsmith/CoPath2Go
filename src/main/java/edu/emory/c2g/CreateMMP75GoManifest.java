@@ -82,7 +82,7 @@ public class CreateMMP75GoManifest {
  
         CaseAttributesFinder caseAttributesFinder = new CaseAttributesFinder(conn);
         MMP75ProcedureFinder mMP75ProcedureFinder = new MMP75ProcedureFinder(conn);
-        ArcherSampleFinder archerSampleFinder = new ArcherSampleFinder(args[2]);
+        ArcherSampleFinder archerSampleFinder = new ArcherSampleFinder(args[2], "22");
 
         System.out.println("runs");
         System.out.println(String.format("%s\t%s\t%s\t%s", "run_id", "platform", "run_type", "run_data_location"));
