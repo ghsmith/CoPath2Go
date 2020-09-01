@@ -71,7 +71,7 @@ public class CreateTSO500GoManifest {
 
         System.out.println("runs");
         System.out.println(String.format("%s\t%s\t%s\t%s", "run_id", "platform", "run_type", "run_data_location"));
-        System.out.println(String.format("%s\t%s\t%s\t%s", illuminaRunName + "_" + timestamp, platform, "TSO500 - SNV", goMount + "/" + illuminaRunName));
+        System.out.println(String.format("%s\t%s\t%s\t%s", illuminaRunName + "_" + timestamp, platform, "TSO500 Flow Cell", goMount + "/" + illuminaRunName));
 
         System.out.println("samples");
         for(int columnNumber = 0; columnNumber < columnNames.size(); columnNumber++) {
@@ -85,13 +85,13 @@ public class CreateTSO500GoManifest {
         while(((inLine = stdIn.readLine()) != null) && !inLine.startsWith("[Data]")) {
         }
         stdIn.readLine();
-        int illuminaSampleNumber = 0;
+        //int illuminaSampleNumber = 0;
         while(((inLine = stdIn.readLine()) != null)) {
-            illuminaSampleNumber++;
+            //illuminaSampleNumber++;
             if(inLine.split(",").length == 0) {
                 continue;
             }
-            String sampleName = inLine.split(",")[1];
+            String sampleName = inLine.split(",")[0];
             String accessionNumber;
             try {
                 Pattern patternSampleName = Pattern.compile("^([^-]+)-([0-9]+)-.*$");
@@ -124,10 +124,10 @@ public class CreateTSO500GoManifest {
                     case "test":
                         System.out.print("TSO500 - SNV");
                         break;
-                    case "disease_name": System.out.print("Hematopoietic and Lymphoid System Disorder"); break;
-                    case "emory_run_id": System.out.print(illuminaRunName + "_" + args[5]); break;
-                    case "emory_order_id": System.out.print(sampleName + "_S" + illuminaSampleNumber); break;
-                    case "emory_base_file_url": System.out.print("https://patheuhmollabserv3.eushc.org/tso500-ruo-2.1.0.60/200820_NDX550321_RUO_0017_AHN7NKBGXF/" + illuminaRunName + "/Logs_Intermediates/DnaRealignment/" + sampleName); break;
+                    case "disease_name": System.out.print("Tumor of Unknown Origin"); break;
+                    case "emory_run_id": System.out.print(illuminaRunName); break;
+                    case "emory_order_id": System.out.print(sampleName); break;
+                    case "emory_base_file_url": System.out.print("https://patheuhmollabserv3.eushc.org/tso500-ruo-2.1.0.60/" + illuminaRunName + "/Logs_Intermediates/DnaRealignment/" + sampleName); break;
                     case "mrn": System.out.print(caseAttributes.empi); break;
                     case "emory_facility_mrn": System.out.print(caseAttributes.mrn); break;
                     case "first_name": System.out.print(caseAttributes.firstName); break;
