@@ -92,7 +92,7 @@ public class CreateTSO500GoManifest {
                 continue;
             }
             String sampleName = inLine.split(",")[0];
-            String accessionNumber;
+            String accessionNumber = null;
             try {
                 Pattern patternSampleName = Pattern.compile("^([^-]+)-([0-9]+)-.*$");
                 Matcher matcherSampleName = patternSampleName.matcher(sampleName);
@@ -106,13 +106,33 @@ public class CreateTSO500GoManifest {
                 accessionNumber = String.format("%s-%s", matcherSampleName.group(1).toUpperCase(), new Integer(matcherSampleName.group(2)));
             }
             catch(ParseException e) {
-                throw new RuntimeException("can't parse sample name " + sampleName);
+                //throw new RuntimeException("can't parse sample name " + sampleName);
             }
             if(sampleName.matches("(?i)^val(?:idation)?-.*$")) {
                 System.err.println(String.format("*** '%s' is a validation sample but will use '%s' demographics ***", sampleName, accessionNumber));
             }
-            CaseAttributes caseAttributes = caseAttributesFinder.getByAccessionNumber(accessionNumber);
-
+            CaseAttributes caseAttributes;
+            if(accessionNumber != null) {
+                caseAttributes = caseAttributesFinder.getByAccessionNumber(accessionNumber);
+            }
+            else {
+                caseAttributes = new CaseAttributes();
+                caseAttributes.accessionNumber = sampleName;
+                caseAttributes.client = "unknown";
+                caseAttributes.dateAccessioned = new java.sql.Date(0);
+                caseAttributes.dateCollected = new java.sql.Date(0);
+                caseAttributes.dob = new java.sql.Date(0);
+                caseAttributes.empi = "unknown";
+                caseAttributes.firstName = "unknown";
+                caseAttributes.gender = "M";
+                caseAttributes.lastName = "unknown";
+                caseAttributes.middleName = "unknown";
+                caseAttributes.mrn = "unknown";
+                caseAttributes.orderingProviderFirstName = "unknown";
+                caseAttributes.orderingProviderLastName = "unknown";
+                caseAttributes.specimenId = "unknown";
+            }
+                    
             for(int columnNumber = 0; columnNumber < columnNames.size(); columnNumber++) {
                 if(columnNumber > 0) { System.out.print("\t"); }
                 switch(columnNames.get(columnNumber)) {
