@@ -97,7 +97,8 @@ public class CreateTSO500GoManifest {
                 Pattern patternSampleName = Pattern.compile("^([^-]+)-([0-9]+)-.*$");
                 Matcher matcherSampleName = patternSampleName.matcher(sampleName);
                 if(!matcherSampleName.matches()) {
-                    patternSampleName = Pattern.compile("(?i)^val(?:idation)?-([^-]+)-([0-9]+)-.*$");
+                    //patternSampleName = Pattern.compile("(?i)^val(?:idation)?-([^-]+)-([0-9]+)-.*$");
+                    patternSampleName = Pattern.compile("^([^-]+)-([0-9]+)$");
                     matcherSampleName = patternSampleName.matcher(sampleName);
                     if(!matcherSampleName.matches()) {
                         throw new ParseException("can't parse sample name " + sampleName, 0);
@@ -112,10 +113,8 @@ public class CreateTSO500GoManifest {
                 System.err.println(String.format("*** '%s' is a validation sample but will use '%s' demographics ***", sampleName, accessionNumber));
             }
             CaseAttributes caseAttributes;
-            if(accessionNumber != null) {
-                caseAttributes = caseAttributesFinder.getByAccessionNumber(accessionNumber);
-            }
-            else {
+            caseAttributes = caseAttributesFinder.getByAccessionNumber(accessionNumber);
+            if(caseAttributes == null) {
                 caseAttributes = new CaseAttributes();
                 caseAttributes.accessionNumber = sampleName;
                 caseAttributes.client = "unknown";
@@ -147,7 +146,7 @@ public class CreateTSO500GoManifest {
                     case "disease_name": System.out.print("Tumor of Unknown Origin"); break;
                     case "emory_run_id": System.out.print(illuminaRunName); break;
                     case "emory_order_id": System.out.print(sampleName); break;
-                    case "emory_base_file_url": System.out.print("https://patheuhmollabserv3.eushc.org/tso500-ruo-2.1.0.60/" + illuminaRunName + "/Logs_Intermediates/DnaRealignment/" + sampleName); break;
+                    case "emory_base_file_url": System.out.print("https://patheuhmollabserv3.eushc.org/tso500-ruo-2.1.0.60/" + illuminaRunName); break;
                     case "mrn": System.out.print(caseAttributes.empi); break;
                     case "emory_facility_mrn": System.out.print(caseAttributes.mrn); break;
                     case "first_name": System.out.print(caseAttributes.firstName); break;
