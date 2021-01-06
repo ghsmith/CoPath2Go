@@ -163,7 +163,7 @@ public class CreateTSO26GoManifest {
                     case "ordering_physician_institute": System.out.print(caseAttributes.client); break;
                     case "specimen_collected": System.out.print(sdf.format(caseAttributes.dateCollected)); break;
                     case "specimen_received": System.out.print(sdf.format(caseAttributes.dateAccessioned)); break;
-                    case "order_date": System.out.print(cMP26Procedure != null && cMP26Procedure.dateOrdered != null ? sdf.format(cMP26Procedure.dateOrdered) : ""); break;
+                    case "order_date": System.out.print(cMP26Procedure != null && cMP26Procedure.dateOrdered != null ? sdf.format(cMP26Procedure.dateOrdered) : sdf.format(new java.util.Date())); break;
                     case "emory_archer_case_url": System.out.print(""); break;
                     case "emory_coverage_statement": System.out.print("[NO COVERAGE STATEMENT]"); break;
                     default: System.out.print(""); break;
