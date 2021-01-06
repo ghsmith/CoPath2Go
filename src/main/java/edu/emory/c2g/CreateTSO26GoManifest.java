@@ -135,7 +135,7 @@ public class CreateTSO26GoManifest {
             for(int columnNumber = 0; columnNumber < columnNames.size(); columnNumber++) {
                 if(columnNumber > 0) { System.out.print("\t"); }
                 switch(columnNames.get(columnNumber)) {
-                    case "run_id": System.out.print(illuminaRunName + "_" + timestamp); break;
+                    case "run_id": System.out.print(illuminaRunName + "-TSO26_" + timestamp); break;
                     case "sample_category": System.out.print("Patient Sample"); break;
                     case "sample_id": System.out.print(sampleName); break;
                     case "stabilization": System.out.print("default"); break;
