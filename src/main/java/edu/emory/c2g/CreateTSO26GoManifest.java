@@ -68,6 +68,7 @@ public class CreateTSO26GoManifest {
         Connection conn = DriverManager.getConnection(args[0]);
  
         CaseAttributesFinder caseAttributesFinder = new CaseAttributesFinder(conn);
+        CMP26ProcedureFinder cMP26ProcedureFinder = new CMP26ProcedureFinder(conn);
 
         System.out.println("runs");
         System.out.println(String.format("%s\t%s\t%s\t%s", "run_id", "platform", "run_type", "run_data_location"));
@@ -113,6 +114,7 @@ public class CreateTSO26GoManifest {
                 System.err.println(String.format("*** '%s' is a validation sample but will use '%s' demographics ***", sampleName, accessionNumber));
             }
             CaseAttributes caseAttributes;
+            CMP26Procedure cMP26Procedure = null;
             caseAttributes = caseAttributesFinder.getByAccessionNumber(accessionNumber);
             if(caseAttributes == null) {
                 caseAttributes = new CaseAttributes();
@@ -130,6 +132,9 @@ public class CreateTSO26GoManifest {
                 caseAttributes.orderingProviderFirstName = "unknown";
                 caseAttributes.orderingProviderLastName = "unknown";
                 caseAttributes.specimenId = "unknown";
+            }
+            else {
+                cMP26Procedure = cMP26ProcedureFinder.getBySpecimenId(caseAttributes.specimenId);
             }
                     
             for(int columnNumber = 0; columnNumber < columnNames.size(); columnNumber++) {
@@ -158,8 +163,7 @@ public class CreateTSO26GoManifest {
                     case "ordering_physician_institute": System.out.print(caseAttributes.client); break;
                     case "specimen_collected": System.out.print(sdf.format(caseAttributes.dateCollected)); break;
                     case "specimen_received": System.out.print(sdf.format(caseAttributes.dateAccessioned)); break;
-                    //case "order_date": System.out.print(mMP75Procedure != null && mMP75Procedure.dateOrdered != null ? sdf.format(mMP75Procedure.dateOrdered) : ""); break;
-                    case "order_date": System.out.print(sdf.format(new java.util.Date())); break;
+                    case "order_date": System.out.print(cMP26Procedure != null && cMP26Procedure.dateOrdered != null ? sdf.format(cMP26Procedure.dateOrdered) : ""); break;
                     case "emory_archer_case_url": System.out.print(""); break;
                     case "emory_coverage_statement": System.out.print("[NO COVERAGE STATEMENT]"); break;
                     default: System.out.print(""); break;
