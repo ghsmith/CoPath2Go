@@ -51,6 +51,7 @@ public class CreateTSO500GoManifest {
     // standard output = GO manifest
     // args[0] = JDBC URL for CoPath database
     // args[1] = Illumina run name (the one specified by Abi)
+    // args[2] = Results virtual directory name (where BAM files are resolved via https links in GO)
     public static void main(String[] args) throws ParseException, IOException, ClassNotFoundException, SQLException, InterruptedException {  
 
         List<Process> processList = new ArrayList<>();
@@ -62,6 +63,7 @@ public class CreateTSO500GoManifest {
 
         //String illuminaRunName = Paths.get(System.getProperty("user.dir")).getFileName().toString();
         String illuminaRunName = args[1];
+        String resultsVirtDirName = args[2];
         String platform = "NextSeq";
  
         Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");  
@@ -146,7 +148,7 @@ public class CreateTSO500GoManifest {
                     case "disease_name": System.out.print("Tumor of Unknown Origin"); break;
                     case "emory_run_id": System.out.print(illuminaRunName); break;
                     case "emory_order_id": System.out.print(sampleName); break;
-                    case "emory_base_file_url": System.out.print("https://patheuhmollabserv3.eushc.org/tso500-ruo-2.1.0.60/" + illuminaRunName); break;
+                    case "emory_base_file_url": System.out.print("https://patheuhmollabserv3.eushc.org/" + resultsVirtDirName); break;
                     case "mrn": System.out.print(caseAttributes.empi); break;
                     case "emory_facility_mrn": System.out.print(caseAttributes.mrn); break;
                     case "first_name": System.out.print(caseAttributes.firstName); break;
