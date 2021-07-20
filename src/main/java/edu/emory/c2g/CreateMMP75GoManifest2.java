@@ -103,10 +103,13 @@ public class CreateMMP75GoManifest2 {
         stdIn.readLine();
         int illuminaSampleNumber = 0;
         while(((inLine = stdIn.readLine()) != null)) {
-            illuminaSampleNumber++;
             if(inLine.split(",").length == 0) {
                 continue;
             }
+            if(inLine.split(",")[0] == null || inLine.split(",")[0].equals("")) {
+		continue;
+            }
+            illuminaSampleNumber++;
             String sampleName = inLine.split(",")[1];
             String accessionNumber;
             try {
