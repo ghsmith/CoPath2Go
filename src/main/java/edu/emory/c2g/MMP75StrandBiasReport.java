@@ -171,7 +171,7 @@ public class MMP75StrandBiasReport {
                 "Consequence (for all transcripts)"
             ));
             for(TsvRecord tsvRecord : tsvRecords) {
-                System.out.println(String.format("<tr><td><a onclick='{ (new XMLHttpRequest()).(this.href); return false; }' href='%s'>[link]</a></td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>",
+                System.out.println(String.format("<tr><td><a onclick='{ x = new XMLHttpRequest(); x.open(\"GET\", this.href); x.send(); return false; }' href='%s'>[link]</a></td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>",
                     String.format("http://127.0.0.1:60151/load?file=https://patheuhmollabserv2.eushc.org/illumina_runs01/%s/Data/Intensities/BaseCalls/Archer_Run/%s.freebayes.ann.vcf.gz,https://patheuhmollabserv2.eushc.org/illumina_runs01/%s/Data/Intensities/BaseCalls/Archer_Run/%s.lofreq.ann.vcf.gz,https://patheuhmollabserv2.eushc.org/illumina_runs01/%s/Data/Intensities/BaseCalls/Archer_Run/%s.vision.ann.vcf.gz,https://patheuhmollabserv2.eushc.org/illumina_runs01/%s/Data/Intensities/BaseCalls/Archer_Run/%s.molbar.trimmed.deduped.merged.bam,https://patheuhmollabserv2.eushc.org/illumina_runs01/%s/Data/Intensities/BaseCalls/Archer_Run/VariantPlex_Myeloid_GSP5031.gtf&locus=%s:%s&genome=hg19&merge=false",
                          runName, sampleName,
                          runName, sampleName,
