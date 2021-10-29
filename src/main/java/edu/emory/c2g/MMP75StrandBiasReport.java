@@ -103,19 +103,19 @@ public class MMP75StrandBiasReport {
         BufferedReader brIn = new BufferedReader(new InputStreamReader(System.in));        
 
         System.out.println("<html></head><style>table { border-collapse: collapse; border:1px solid black; } table td{ border:1px solid black; }</style></head><body><pre>");
-        System.out.println(String.format("MMP75 Fragment length and strand bias QC Report"));
+        System.out.println(String.format("MMP75 fragment length and strand bias QC report"));
         System.out.println(String.format("Run name: %s", runName));
         System.out.println(String.format("Date generated: %s", sdf1.format(new Date())));
         System.out.println(String.format(""));
         System.out.println(String.format("1. Archer strand bias calls becomes less reliable with lower fragment sizes (ie, closer to 150 bp)."));
         System.out.println(String.format(""));
         System.out.println(String.format("2. The variants in this report have Archer strand bias calls but are otherwise high quality:"));
-        System.out.println(String.format("  AO >= 5"));
-        System.out.println(String.format("  UAO >= 3"));
-        System.out.println(String.format("  gnomAD_AF <= 0.05"));
-        System.out.println(String.format("  Consequence like 5_prime_UTR_variant, coding_sequence_variant, ... [see Note 1]"));
-        System.out.println(String.format("  AF >= 0.027"));
-        System.out.println(String.format("  HasSeqDirBias is not Yes"));
+        System.out.println(String.format("  AO >= 5 (or absent)"));
+        System.out.println(String.format("  UAO >= 3 (or absent)"));
+        System.out.println(String.format("  gnomAD_AF <= 0.05 (or absent)"));
+        System.out.println(String.format("  Consequence like 5_prime_UTR_variant, coding_sequence_variant, ... (or absent) [see Note 1]"));
+        System.out.println(String.format("  AF >= 0.027 (or absent)"));
+        System.out.println(String.format("  HasSeqDirBias is not Yes (or absent)"));
         System.out.println(String.format(""));
         System.out.println(String.format("3. Start IGV on your PC before clicking the IGV links."));
         
