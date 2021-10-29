@@ -159,7 +159,7 @@ public class MMP75StrandBiasReport {
             }
                 
             System.out.println(String.format(""));
-            System.out.println(String.format("Sample name: <b>%s</b> (mean frag = %s / med frag = %s)", sampleName, meanFragLength, medianFragLength));
+            System.out.println(String.format("Sample name: <b>%s</b> (med frag = %s / mean frag = %s)", sampleName, medianFragLength, meanFragLength));
             System.out.println(String.format("<table><tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>",
                 "IGV",
                 "Chr",
