@@ -71,7 +71,7 @@ public class MMP75StrandBiasReport {
         }
         public boolean isStrandBiasHighQuality() {
             if(
-                (HasSampleStrandBias != null && HasSampleStrandBias.length() == 0 && HasSampleStrandBias.equals("Yes"))
+                (HasSampleStrandBias != null && HasSampleStrandBias.length() > 0 && HasSampleStrandBias.equals("Yes"))
                 && (AO == null || AO.length() == 0 || Integer.valueOf(AO) >= 5)
                 && (UAO == null || UAO.length() == 0 || Integer.valueOf(UAO) >= 3)
                 && (gnomAD_AF == null || gnomAD_AF.length() == 0 || Float.valueOf(gnomAD_AF) <= 0.05f)
