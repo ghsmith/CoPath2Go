@@ -2,18 +2,17 @@ package edu.emory.c2g;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class MMP75StrandBiasReport {
 
@@ -41,6 +40,7 @@ public class MMP75StrandBiasReport {
     };
     
     public static class TsvRecord {
+        int lineNo;
         String chromosome;
         String position;
         String PreferredSymbol;
@@ -53,7 +53,8 @@ public class MMP75StrandBiasReport {
         String consequence;
         String HasSampleStrandBias;
         String HasSeqDirBias;
-        public TsvRecord(Map<String, Integer> tsvColMap, String tsvLine) {
+        public TsvRecord(Map<String, Integer> tsvColMap, String tsvLine, int lineNo) {
+            this.lineNo = lineNo;
             String[] fields = tsvLine.split("\t");
             chromosome = fields[tsvColMap.get("chromosome")];
             position = fields[tsvColMap.get("position")];
@@ -68,7 +69,7 @@ public class MMP75StrandBiasReport {
             HasSampleStrandBias = fields[tsvColMap.get("HasSampleStrandBias")];
             HasSeqDirBias = fields[tsvColMap.get("HasSeqDirBias")];
         }
-        public boolean isHighQuality() {
+        public boolean isStrandBiasHighQuality() {
             if(
                 (AO == null || AO.length() == 0 || Integer.valueOf(AO) >= 5)
                 && (UAO == null || UAO.length() == 0 || Integer.valueOf(UAO) >= 3)
@@ -99,6 +100,7 @@ public class MMP75StrandBiasReport {
     public static void main(String[] args) throws FileNotFoundException, IOException {
         
         String runName = args[0];
+        Boolean addAsterisk = args.length >=2 && args[1].equals("add-asterisk");
         
         BufferedReader brIn = new BufferedReader(new InputStreamReader(System.in));        
 
@@ -129,17 +131,70 @@ public class MMP75StrandBiasReport {
             List<TsvRecord> tsvRecords = new ArrayList<>();
             {
                 BufferedReader brTsv = new BufferedReader(new FileReader(sampleName + ".vcf.summary.tsv"));
+                PrintStream brTsvOut = null;
+                if(addAsterisk) {
+                    brTsvOut = new PrintStream(new FileOutputStream(sampleName + ".vcf.summary.tsv.001"));
+                }
                 Map<String, Integer> tsvColMap = new HashMap<>();
                 int x = 0;
-                for(String col : brTsv.readLine().split("\t")) {
+                String colLine = brTsv.readLine();
+                if(addAsterisk) {
+                    brTsvOut.println(colLine);
+                }
+                for(String col : colLine.split("\t")) {
                     tsvColMap.put(col, x++);
                 }
+                if(!(
+                    tsvColMap.get("chromosome") == 2
+                    && tsvColMap.get("position") == 3
+                    && tsvColMap.get("PreferredSymbol") == 51
+                    && tsvColMap.get("reference") == 4
+                    && tsvColMap.get("mutation") == 5
+                    && tsvColMap.get("AO") == 10
+                    && tsvColMap.get("UAO") == 14
+                    && tsvColMap.get("AF") == 11
+                    && tsvColMap.get("gnomAD_AF") == 73
+                    && tsvColMap.get("consequence") == 58
+                    && tsvColMap.get("HasSampleStrandBias") == 33
+                    && tsvColMap.get("HasSeqDirBias") == 40
+                )) {
+                    throw new RuntimeException("error - fields numbers not as expected");
+                }
+                int lineNo = 1;
                 String tsvLine;
                 while((tsvLine = brTsv.readLine()) != null) {
-                    TsvRecord tsvRecord = new TsvRecord(tsvColMap, tsvLine);
-                    if(tsvRecord.isHighQuality()) {
+                    lineNo++;
+                    TsvRecord tsvRecord = new TsvRecord(tsvColMap, tsvLine, lineNo);
+                    if(tsvRecord.isStrandBiasHighQuality()) {
                         tsvRecords.add(tsvRecord);
+                        if(addAsterisk) {
+                            String[] fields = tsvLine.split("\t");
+                            for(int fieldNo = 0; fieldNo < fields.length; fieldNo++) {
+                                if(fieldNo > 0) {
+                                    brTsvOut.print("\t");
+                                }
+                                if(fieldNo == tsvColMap.get("HasSampleStrandBias")) {
+                                    if(!fields[fieldNo].equals("Yes")) {
+                                        throw new RuntimeException("error - HasSampleStrandBias not as expected");
+                                    }
+                                    brTsvOut.print("Yes*");
+                                }
+                                else {
+                                    brTsvOut.print(fields[fieldNo]);
+                                }
+                            }
+                            brTsvOut.println();
+                        }
                     }
+                    else {
+                        if(addAsterisk) {
+                            brTsvOut.println(tsvLine);
+                        }
+                    }
+                }
+                brTsv.close();
+                if(addAsterisk) {
+                    brTsvOut.close();
                 }
             }
 
@@ -156,11 +211,13 @@ public class MMP75StrandBiasReport {
                         medianFragLength = frLine.split("\t")[1];
                     }
                 }
+                brFullResults.close();
             }
-                
+
             System.out.println(String.format(""));
             System.out.println(String.format("Sample name: <b>%s</b> (med frag = %s / mean frag = %s)", sampleName, medianFragLength, meanFragLength));
-            System.out.println(String.format("<table><tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>",
+            System.out.println(String.format("<table><tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>",
+                "Line No",
                 "IGV",
                 "Chr",
                 "Pos",
@@ -171,7 +228,8 @@ public class MMP75StrandBiasReport {
                 "Consequence (for all transcripts)"
             ));
             for(TsvRecord tsvRecord : tsvRecords) {
-                System.out.println(String.format("<tr><td><a onclick='{ x = new XMLHttpRequest(); x.open(\"GET\", this.href); x.send(); return false; }' href='%s'>[link]</a></td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>",
+                System.out.println(String.format("<tr><td>%s</td><td><a onclick='{ x = new XMLHttpRequest(); x.open(\"GET\", this.href); x.send(); return false; }' href='%s'>[link]</a></td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>",
+                    tsvRecord.lineNo,
                     String.format("http://127.0.0.1:60151/load?file=https://patheuhmollabserv2.eushc.org/illumina_runs01/%s/Data/Intensities/BaseCalls/Archer_Run/%s.freebayes.ann.vcf.gz,https://patheuhmollabserv2.eushc.org/illumina_runs01/%s/Data/Intensities/BaseCalls/Archer_Run/%s.lofreq.ann.vcf.gz,https://patheuhmollabserv2.eushc.org/illumina_runs01/%s/Data/Intensities/BaseCalls/Archer_Run/%s.vision.ann.vcf.gz,https://patheuhmollabserv2.eushc.org/illumina_runs01/%s/Data/Intensities/BaseCalls/Archer_Run/%s.molbar.trimmed.deduped.merged.bam,https://patheuhmollabserv2.eushc.org/illumina_runs01/%s/Data/Intensities/BaseCalls/Archer_Run/VariantPlex_Myeloid_GSP5031.gtf&locus=%s:%s&genome=hg19&merge=false",
                          runName, sampleName,
                          runName, sampleName,
@@ -190,7 +248,7 @@ public class MMP75StrandBiasReport {
                 ));
             }
             if(tsvRecords.size() == 0) {
-                System.out.println(String.format("<tr><td colspan='8'><i>none</i></td></tr>"));
+                System.out.println(String.format("<tr><td colspan='9'><i>none</i></td></tr>"));
             }
             System.out.println(String.format("</table>"));
             
