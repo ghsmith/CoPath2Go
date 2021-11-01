@@ -71,11 +71,11 @@ public class MMP75StrandBiasReport {
         }
         public boolean isStrandBiasHighQuality() {
             if(
-                (AO == null || AO.length() == 0 || Integer.valueOf(AO) >= 5)
+                (HasSampleStrandBias != null && HasSampleStrandBias.length() == 0 && HasSampleStrandBias.equals("Yes"))
+                && (AO == null || AO.length() == 0 || Integer.valueOf(AO) >= 5)
                 && (UAO == null || UAO.length() == 0 || Integer.valueOf(UAO) >= 3)
                 && (gnomAD_AF == null || gnomAD_AF.length() == 0 || Float.valueOf(gnomAD_AF) <= 0.05f)
                 && (AF == null || AF.length() == 0 || Float.valueOf(AF) >= 0.027f)
-                && (HasSampleStrandBias == null || HasSampleStrandBias.length() == 0 || HasSampleStrandBias.equals("Yes"))
                 && (HasSeqDirBias == null || HasSeqDirBias.length() == 0 || !HasSeqDirBias.equals("Yes"))
             ) {
                 for(String consequenceFilter : consequenceFilters) {
