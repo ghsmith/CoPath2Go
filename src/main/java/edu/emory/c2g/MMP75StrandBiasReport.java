@@ -31,10 +31,10 @@ public class MMP75StrandBiasReport {
 "protein_altering_variant",
 "splice_acceptor_variant",
 "splice_donor_variant",
-"splice_region_Variant",
+"splice_region_variant",
 "start_lost",
 "stop_gained",
-"stop_list",
+"stop_lost",
 "transcript_ablation",
 "transcript_amplification"
     };
