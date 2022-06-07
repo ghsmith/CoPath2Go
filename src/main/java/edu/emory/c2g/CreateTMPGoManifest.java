@@ -73,7 +73,7 @@ public class CreateTMPGoManifest {
 
         System.out.println("runs");
         System.out.println(String.format("%s\t%s\t%s\t%s", "run_id", "platform", "run_type", "run_data_location"));
-        System.out.println(String.format("%s\t%s\t%s\t%s", illuminaRunName + "_" + timestamp, platform, "TSO500V2 Flow Cell", goMount + "/" + illuminaRunName));
+        System.out.println(String.format("%s\t%s\t%s\t%s", illuminaRunName +"_TMP_" + timestamp, platform, "TSO500V2 Flow Cell", goMount + "/" + illuminaRunName));
 
         System.out.println("samples");
         for(int columnNumber = 0; columnNumber < columnNames.size(); columnNumber++) {
@@ -137,7 +137,7 @@ public class CreateTMPGoManifest {
             for(int columnNumber = 0; columnNumber < columnNames.size(); columnNumber++) {
                 if(columnNumber > 0) { System.out.print("\t"); }
                 switch(columnNames.get(columnNumber)) {
-                    case "run_id": System.out.print(illuminaRunName + "_" + timestamp); break;
+                    case "run_id": System.out.print(illuminaRunName +"_TMP_" + timestamp); break;
                     case "sample_category": System.out.print("Patient Sample"); break;
                     case "sample_id": System.out.print(sampleName); break;
                     case "stabilization": System.out.print("default"); break;
